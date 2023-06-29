@@ -2,33 +2,25 @@ package model
 
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import java.io.FileInputStream
 
 
 
 
 
+@Serializable
+class Carte(private var id:Int,private var nom:String,private var numeros:List<Int>,private var prix:Int,private var type:TypeBatiment):Comparable<Carte> {
 
-class Carte(id:Int,nom:String,numeros:List<Int>,prix:Int,type:TypeBatiment):Comparable<Carte> {
-    private var nom : String
-    private var prix : Int
-    private var type : TypeBatiment
-    private var id : Int
 
+    @Contextual
     private lateinit var imageView: ImageView
-    private var numeros : List<Int>
     private lateinit var couleur : String
 
     init {
-        this.nom = nom
-        this.prix = prix
-        this.type = type
-        this.numeros = numeros
-        this.id = id
         setCouleur()
         setImageView()
-
-
     }
 
     private fun setImageView(){

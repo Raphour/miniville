@@ -1,12 +1,8 @@
 package model
 
-class CarteMonument(nom:String,prix:Int,actif:Boolean) {
-    private var nom : String
-    private var prix: Int
-    private var actif:Boolean
-    init {
-        this.nom = nom
-        this.actif = actif
-        this.prix = prix
-    }
+import kotlinx.serialization.Serializable
+
+@Serializable
+class CarteMonument(private var nom:String,private var prix:Int,private var actif:Boolean) {
+
 }

@@ -1,22 +1,20 @@
 package model
 
-class Joueur(id:Int,nom:String) {
-    private var id : Int
-    private var nom :String
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+class Joueur(private var id:Int, private var nom:String) {
+
     private var bourse : Int
     var main : MutableList<Carte>
-    var mainMonument : MutableList<CarteMonument>
+    private var mainMonument : MutableList<CarteMonument>
 
     init {
-        this.id = id
-        this.nom = nom
         this.bourse = 3
         this.main = mutableListOf()
         this.mainMonument = mutableListOf()
-
         this.remplirMainMonuments()
-
-
     }
 
     fun getId():Int{
@@ -36,13 +34,15 @@ class Joueur(id:Int,nom:String) {
         return this.bourse
     }
 
+    fun getMainMonument():MutableList<CarteMonument>{
+        return this.mainMonument
+    }
+
     private fun remplirMainMonuments(){
         this.mainMonument.add(CarteMonument("Gare",4,false))
         this.mainMonument.add(CarteMonument("Centre commercial",1,false))
         this.mainMonument.add(CarteMonument("Parc d'attraction",16,false))
         this.mainMonument.add(CarteMonument("Tour radio",22,false))
-
-
     }
 
     fun addBourse(montant:Int){
