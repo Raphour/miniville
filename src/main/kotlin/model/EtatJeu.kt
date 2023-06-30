@@ -1,0 +1,5 @@
+package model
+
+enum class EtatJeu {
+    LANCER_DES, ACHETER_OU_RIEN_FAIRE,JEU_FINI,ATTENTE_JOUEURS,APPLIQUER_EFFETS
+}

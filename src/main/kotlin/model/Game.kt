@@ -1,11 +1,13 @@
 package model
 
+import kotlinx.serialization.Serializable
 import java.lang.Exception
-
-class Game(nbJoueurs:Int) {
+@Serializable
+class Game {
 
     private var reserve : MutableList<Carte> = mutableListOf()
     private var lanceDes : Pair<Int?,Int?> = Pair<Int?,Int?>(null,null)
+    private var etatJeu :EtatJeu = EtatJeu.ATTENTE_JOUEURS
 
     private var listeJoueurs : MutableList<Joueur> = mutableListOf()
 
@@ -32,13 +34,45 @@ class Game(nbJoueurs:Int) {
     }
 
     fun lancerDes(nbDes:Int){
-        val de1 = (1..6).random()
-        var de2 : Int? = null
-        if(nbDes == 2){
-            de2 = (1..6).random()
-        }
-        this.lanceDes = Pair(de1,de2)
+        if (etatJeu == EtatJeu.LANCER_DES){
 
+            val de1 = (1..6).random()
+            var de2 : Int? = null
+            if(nbDes == 2){
+                de2 = (1..6).random()
+            }
+            this.lanceDes = Pair(de1,de2)
+        }else{
+            throw Exception("Ce n'est pas le moment de lancer les dés")
+        }
+
+    }
+
+    fun construireBatiment(batiment :Carte,joueur: Joueur){
+        if(etatJeu == EtatJeu.ACHETER_OU_RIEN_FAIRE){
+            if (joueur.getBourse() >= batiment.getPrix()){
+                joueur.main.add(batiment)
+                this.reserve.remove(batiment)
+                joueur.removeBourse(batiment.getPrix())
+            }
+        }else{
+            throw Exception("Ce n'est pas le moment de construire")
+        }
+    }
+
+    fun construireMonument(monument: CarteMonument,joueur: Joueur){
+        if (etatJeu == EtatJeu.ACHETER_OU_RIEN_FAIRE){
+            if (joueur.getBourse() >= monument.getPrix() && !monument.getEtat()){
+                joueur.removeBourse(monument.getPrix())
+                for(m in joueur.getMainMonument()){
+                    if(m == monument){
+                        m.setEtat(true)
+                    }
+                }
+            }
+        }else{
+            throw Exception("Ce n'est pas le moment de construire")
+        }
     }
 
     fun distributionCarteJoueur(){

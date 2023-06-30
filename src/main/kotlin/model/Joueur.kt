@@ -38,6 +38,8 @@ class Joueur(private var id:Int, private var nom:String) {
         return this.mainMonument
     }
 
+
+
     private fun remplirMainMonuments(){
         this.mainMonument.add(CarteMonument("Gare",4,false))
         this.mainMonument.add(CarteMonument("Centre commercial",1,false))
