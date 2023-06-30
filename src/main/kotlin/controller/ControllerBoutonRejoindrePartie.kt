@@ -2,14 +2,15 @@ package controller
 
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
-import javafx.scene.Scene
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.ButtonType
 import javafx.stage.Stage
+import kotlinx.serialization.json.Json
 import model.Game
-import view.CreerPartie
+import model.Joueur
 import view.InGame
+import view.VueRejoindrePartie
 import java.io.IOException
 import java.net.DatagramPacket
 import java.net.DatagramSocket
@@ -18,10 +19,17 @@ import java.net.ServerSocket
 import java.util.*
 
 
-class ControllerBoutonRejoindrePartie(game: Game, vueInGame: InGame, primaryStage: Stage) : EventHandler<ActionEvent> {
-    private var primaryStage : Stage
-    private val game : Game
-    private var vueInGame : InGame
+class ControllerBoutonRejoindrePartie(
+    game: Game,
+    vueRejoindre: VueRejoindrePartie,
+    vueInGame: InGame,
+    primaryStage: Stage
+) : EventHandler<ActionEvent> {
+    private var primaryStage: Stage
+    private val game: Game
+    private var vueInGame: InGame
+    private var vueRejoindre: VueRejoindrePartie
+
     // Port d'écoute pour les paquets
     private val port = generateUniquePort(5000, 6000)
 
@@ -33,16 +41,46 @@ class ControllerBoutonRejoindrePartie(game: Game, vueInGame: InGame, primaryStag
         this.primaryStage = primaryStage
         this.game = game
         this.vueInGame = vueInGame
+        this.vueRejoindre = vueRejoindre
 
     }
+
     override fun handle(event: ActionEvent?) {
         if (partieExistante()) {
-            creerPartie(port)
-            val vue = CreerPartie()
-            vue.boutonCreerPartie.onAction = ControllerBoutonCreerPartie(game, vueInGame, primaryStage)
-            val scene = Scene(vue)
+            val nom = vueRejoindre.getNomField()
+            if (nom != "") {
 
-            primaryStage.scene = scene
+
+                val buffer = ByteArray(bufferSize)
+                val packet = DatagramPacket(buffer, buffer.size)
+                val socket = DatagramSocket(port)
+                val listeJoueurs: MutableList<Joueur>?
+
+                socket.receive(packet) // Réception du paquet
+
+
+                // Traitez le paquet selon vos besoins
+                val receivedData = String(packet.data, 0, packet.length)
+                val receivedGame: Game? = try {
+                    Json.decodeFromString(receivedData)
+                } catch (e: Exception) {
+                    null
+                }
+
+                receivedGame?.let {
+                    // Traitez l'objet Game selon vos besoins
+                    println("Game reçu : $it")
+
+                    // Stockez la liste de joueurs dans la variable joueurList
+                    listeJoueurs = it.getListeJoueurs()
+                    val idJoueur = listeJoueurs.size
+                    val joueur = Joueur(idJoueur, nom)
+                    game.setPlayer(joueur)
+                    game.addPlayerToGame(joueur)
+
+                }
+
+            }
 
         } else {
             val alert = Alert(AlertType.CONFIRMATION)
@@ -127,7 +165,6 @@ class ControllerBoutonRejoindrePartie(game: Game, vueInGame: InGame, primaryStag
 
         println("Nouvelle partie créée !")
     }
-
 
 
 }

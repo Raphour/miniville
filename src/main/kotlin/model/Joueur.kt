@@ -87,4 +87,8 @@ class Joueur(private var id:Int, private var nom:String) {
         result = 31 * result + nom.hashCode()
         return result
     }
+
+    override fun toString(): String {
+        return "Joueur(id=$id, nom='$nom', bourse=$bourse, main=$main, mainMonument=$mainMonument)"
+    }
 }

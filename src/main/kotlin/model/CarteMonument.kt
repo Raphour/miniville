@@ -37,4 +37,8 @@ class CarteMonument(private var nom:String,private var prix:Int,private var acti
         return result
     }
 
+    override fun toString(): String {
+        return "CarteMonument(nom='$nom', actif=$actif)"
+    }
+
 }

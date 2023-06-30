@@ -22,10 +22,11 @@ class MonApplication : Application() {
     override fun start(primaryStage: Stage) {
         val game = Game()
         val vueInGame = InGame()
+        val vueRejoindrePartie = VueRejoindrePartie()
 
 
         val vueAccueil = VueAccueil()
-        vueAccueil.boutonRejoindrePartie.onAction = ControllerBoutonRejoindrePartie(game, vueInGame, primaryStage)
+        vueAccueil.boutonRejoindrePartie.onAction = ControllerBoutonRejoindrePartie(game,vueRejoindrePartie, vueInGame, primaryStage)
         primaryStage.scene = Scene(vueAccueil)
         primaryStage.title = "Miniville"
         primaryStage.show()

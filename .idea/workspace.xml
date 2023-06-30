@@ -4,18 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48cbac3a-ba0c-43c5-afd6-5d707b14bb66" name="Changes" comment="Debut install reseau">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonCreerPartie.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonRejoindrePartie.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/model/EtatJeu.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/view/VueAccueil.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/view/VueRejoindrePartie.kt" afterDir="false" />
+    <list default="true" id="48cbac3a-ba0c-43c5-afd6-5d707b14bb66" name="Changes" comment="Ajout notion etat jeu + controller">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoucleJeu.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonCreerPartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonCreerPartie.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonRejoindrePartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonRejoindrePartie.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/Carte.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/Carte.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/CarteMonument.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/CarteMonument.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/Game.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/Game.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/Joueur.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/Joueur.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/view/CreerPartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/view/CreerPartie.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/view/VueAccueil.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/view/VueAccueil.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/view/VueRejoindrePartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/view/VueRejoindrePartie.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -136,7 +136,8 @@
       <workItem from="1687974464260" duration="356000" />
       <workItem from="1687974840996" duration="14040000" />
       <workItem from="1688026148366" duration="6456000" />
-      <workItem from="1688128797244" duration="5071000" />
+      <workItem from="1688128797244" duration="7310000" />
+      <workItem from="1688157920346" duration="5599000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <created>1687991361784</created>
@@ -152,7 +153,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688031779679</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Ajout notion etat jeu + controller">
+      <created>1688134169418</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1688134169418</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -161,6 +169,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Init" />
     <MESSAGE value="Debut install reseau" />
-    <option name="LAST_COMMIT_MESSAGE" value="Debut install reseau" />
+    <MESSAGE value="Ajout notion etat jeu + controller" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ajout notion etat jeu + controller" />
   </component>
 </project>

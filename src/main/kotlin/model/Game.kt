@@ -1,6 +1,9 @@
 package model
 
+import javafx.application.Platform
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.lang.Exception
 @Serializable
 class Game {
@@ -8,8 +11,10 @@ class Game {
     private var reserve : MutableList<Carte> = mutableListOf()
     private var lanceDes : Pair<Int?,Int?> = Pair<Int?,Int?>(null,null)
     private var etatJeu :EtatJeu = EtatJeu.ATTENTE_JOUEURS
+    private var joueurActuel : Int = 0
 
     private var listeJoueurs : MutableList<Joueur> = mutableListOf()
+    private lateinit var player : Joueur
 
     fun preremplirCarte(){
         for(i in 0 until 4){
@@ -42,11 +47,37 @@ class Game {
                 de2 = (1..6).random()
             }
             this.lanceDes = Pair(de1,de2)
+
         }else{
             throw Exception("Ce n'est pas le moment de lancer les dés")
         }
 
     }
+
+    fun setPlayer(joueur: Joueur){
+        this.player = joueur
+    }
+
+    fun getJoueurActuel():Int{
+        return joueurActuel
+    }
+
+    fun getJoueur():Joueur{
+        return player
+    }
+    fun addPlayerToGame(joueur: Joueur){
+        this.listeJoueurs.add(joueur)
+    }
+
+    fun getEtat():EtatJeu{
+        return this.etatJeu
+    }
+
+    fun getListeJoueurs():MutableList<Joueur>{
+        return this.listeJoueurs
+    }
+
+
 
     fun construireBatiment(batiment :Carte,joueur: Joueur){
         if(etatJeu == EtatJeu.ACHETER_OU_RIEN_FAIRE){
@@ -197,5 +228,9 @@ class Game {
 
 
         }
+    }
+
+    override fun toString(): String {
+        return "Game(reserve=$reserve, lanceDes=$lanceDes, etatJeu=$etatJeu, joueurActuel=$joueurActuel, listeJoueurs=$listeJoueurs, player=$player)"
     }
 }
