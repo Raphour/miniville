@@ -5,17 +5,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="48cbac3a-ba0c-43c5-afd6-5d707b14bb66" name="Changes" comment="Ajout notion etat jeu + controller">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoucleJeu.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/prettier.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/carte1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/carte2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cartes10.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cartes11.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cartes12.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cartes13.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cartes14.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cartes15.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cartes3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cartes4.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cartes5.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cartes6.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cartes7.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cartes8.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cartes9.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonCreerPartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonCreerPartie.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonRejoindrePartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonRejoindrePartie.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/Carte.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/Carte.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/CarteMonument.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/CarteMonument.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoucleJeu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoucleJeu.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/EtatJeu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/EtatJeu.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/Game.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/Game.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/Joueur.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/Joueur.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/view/VueAccueil.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/view/VueAccueil.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/view/VueRejoindrePartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/view/VueRejoindrePartie.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,27 +86,31 @@
     </option>
   </component>
   <component name="ProjectId" id="2RqP68PQR2E2FIqHgOhucJQwwYu" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/project/miniville&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;Errors&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "D:/project/miniville",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "prettierjs.PrettierConfiguration.Package": "D:\\project\\miniville",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "settings.javascript.prettier",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="miniville [dependencies]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
@@ -138,6 +152,7 @@
       <workItem from="1688026148366" duration="6456000" />
       <workItem from="1688128797244" duration="7310000" />
       <workItem from="1688157920346" duration="5599000" />
+      <workItem from="1688210171765" duration="3901000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <created>1687991361784</created>
@@ -167,9 +182,14 @@
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Init" />
     <MESSAGE value="Debut install reseau" />
     <MESSAGE value="Ajout notion etat jeu + controller" />
     <option name="LAST_COMMIT_MESSAGE" value="Ajout notion etat jeu + controller" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

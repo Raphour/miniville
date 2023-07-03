@@ -27,7 +27,7 @@ class MonApplication : Application() {
 
         val vueAccueil = VueAccueil()
         vueAccueil.boutonRejoindrePartie.onAction = ControllerBoutonRejoindrePartie(game,vueRejoindrePartie, vueInGame, primaryStage)
-        primaryStage.scene = Scene(vueAccueil)
+        primaryStage.scene = Scene(vueAccueil,1920.0,1080.0)
         primaryStage.title = "Miniville"
         primaryStage.show()
 
