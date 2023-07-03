@@ -15,7 +15,6 @@ class Game {
 
     private var listeJoueurs: MutableList<Joueur> = mutableListOf()
 
-    @Transient
     private lateinit var player: Joueur
 
     fun preremplirCarte() {

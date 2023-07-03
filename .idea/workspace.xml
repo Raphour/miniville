@@ -4,28 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48cbac3a-ba0c-43c5-afd6-5d707b14bb66" name="Changes" comment="Ajout notion etat jeu + controller">
-      <change afterPath="$PROJECT_DIR$/.idea/prettier.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/carte1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/carte2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cartes10.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cartes11.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cartes12.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cartes13.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cartes14.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cartes15.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cartes3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cartes4.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cartes5.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cartes6.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cartes7.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cartes8.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cartes9.png" afterDir="false" />
+    <list default="true" id="48cbac3a-ba0c-43c5-afd6-5d707b14bb66" name="Changes" comment="ajout assets carte + ajout fonction resultat lancer dé">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoucleJeu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoucleJeu.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/EtatJeu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/EtatJeu.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonCreerPartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonCreerPartie.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonRejoindrePartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonRejoindrePartie.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/Game.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/Game.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/view/CreerPartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/view/VueCreerPartie.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/view/InGame.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/view/InGame.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/view/VueRejoindrePartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/view/VueRejoindrePartie.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,6 +64,9 @@
       </list>
     </option>
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonRejoindrePartie.kt" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -111,7 +103,12 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\project\miniville\assets\cartes" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Kotlin.MainKt">
     <configuration name="miniville [dependencies]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -133,8 +130,16 @@
       <DebugAllEnabled>false</DebugAllEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="MainKt" />
+      <module name="miniville.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotlin.MainKt" />
         <item itemvalue="Gradle.miniville [dependencies]" />
       </list>
     </recent_temporary>
@@ -152,7 +157,7 @@
       <workItem from="1688026148366" duration="6456000" />
       <workItem from="1688128797244" duration="7310000" />
       <workItem from="1688157920346" duration="5599000" />
-      <workItem from="1688210171765" duration="3901000" />
+      <workItem from="1688210171765" duration="13026000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <created>1687991361784</created>
@@ -175,18 +180,37 @@
       <option name="project" value="LOCAL" />
       <updated>1688134169418</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="ajout assets carte + ajout fonction resultat lancer dé">
+      <created>1688385418084</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1688385418084</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Init" />
     <MESSAGE value="Debut install reseau" />
     <MESSAGE value="Ajout notion etat jeu + controller" />
-    <option name="LAST_COMMIT_MESSAGE" value="Ajout notion etat jeu + controller" />
+    <MESSAGE value="ajout assets carte + ajout fonction resultat lancer dé" />
+    <option name="LAST_COMMIT_MESSAGE" value="ajout assets carte + ajout fonction resultat lancer dé" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

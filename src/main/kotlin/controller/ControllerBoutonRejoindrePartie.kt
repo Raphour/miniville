@@ -5,6 +5,7 @@ import javafx.event.EventHandler
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.ButtonType
+import javafx.scene.image.ImageView
 import javafx.stage.Stage
 import kotlinx.serialization.json.Json
 import model.Game
@@ -78,6 +79,36 @@ class ControllerBoutonRejoindrePartie(
                     game.setPlayer(joueur)
                     game.addPlayerToGame(joueur)
 
+
+                }
+
+                for (joueurAjoute in game.getListeJoueurs()) {
+                    val cartesImageViewList: MutableList<ImageView> = joueurAjoute.main.map { carte ->
+                        val imageView =
+                            ImageView(carte.getImageView()) // Créez l'ImageView en utilisant l'image de la carte
+                        // Effectuez ici des configurations supplémentaires sur l'ImageView si nécessaire
+                        imageView
+                    }.toMutableList()
+                    fun createUniqueMutableList(joueurs: List<Joueur>): MutableList<Int> {
+                        val joueursIds = joueurs.map { it.getId() }
+                        val uniqueList = mutableListOf<Int>()
+                        for (i in 1..4) {
+                            if (!joueursIds.contains(i)) {
+                                uniqueList.add(i)
+                            }
+                        }
+                        return uniqueList
+                    }
+                    vueRejoindre.setListeId(createUniqueMutableList(game.getListeJoueurs()))
+
+                    vueInGame.addPlayerToGrid(
+                        joueurAjoute.getNom(),
+                        joueurAjoute.getMainMonument().count { it.getEtat() },
+                        game.getJoueur().getId(),
+                        joueurAjoute.getId(),
+                        joueurAjoute.getBourse(),
+                        cartesImageViewList
+                    )
                 }
 
             }

@@ -10,23 +10,25 @@ import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 
-class ControllerBoucleJeu(game: Game, port: Int, vueInGame: InGame, primaryStage: Stage) {
+class ControllerBoucleJeu(game: Game, socket: DatagramSocket, vueInGame: InGame, primaryStage: Stage) {
     private var game: Game
     private var vueInGame: InGame
     private var primaryStage: Stage
-    private var port: Int
+    private var socket: DatagramSocket
     private var bufferSize = 1024
 
     init {
         this.game = game
         this.vueInGame = vueInGame
         this.primaryStage = primaryStage
-        this.port = port
+        this.socket = socket
 
     }
 
     fun mainLoop() {
+        println("BIENVENUE DANS MAINLOOP")
         val receivedGame = receivePacket()
+
 
         receivedGame.let {
             // Traitez l'objet Game selon vos besoins
@@ -44,7 +46,7 @@ class ControllerBoucleJeu(game: Game, port: Int, vueInGame: InGame, primaryStage
                     } else {
                         game.lancerDes(1)
                     }
-                    sendPacket(game, InetAddress.getLocalHost(), port)
+                    sendPacket(game, InetAddress.getLocalHost(), socket.port)
                 }
 
                 EtatJeu.APPLIQUER_OU_RELANCER_DES -> {
@@ -72,23 +74,23 @@ class ControllerBoucleJeu(game: Game, port: Int, vueInGame: InGame, primaryStage
                     TODO("Implementer pop-up de fin de jeu")
                 }
             }
-            sendPacket(game,InetAddress.getLocalHost(),port)
+            sendPacket(game, InetAddress.getLocalHost(), socket.port)
 
         }
 
     }
 
     private fun receivePacket(): Game {
-        val socket = DatagramSocket(5000) // Use the desired port number
+
 
         val buffer = ByteArray(1024) // Adjust the buffer size as per your requirements
         val packet = DatagramPacket(buffer, buffer.size)
         socket.receive(packet)
 
         val gameBytes = packet.data
-        val game = deserializeGame(gameBytes.decodeToString()) // Deserialize the bytes back to a Game object
+        val game = deserializeGame(String(gameBytes,0,packet.length)) // Deserialize the bytes back to a Game object
 
-        socket.close()
+
 
         return game
     }
@@ -98,15 +100,16 @@ class ControllerBoucleJeu(game: Game, port: Int, vueInGame: InGame, primaryStage
     }
 
     private fun deserializeGame(gameString: String): Game {
-        return Json.decodeFromString(gameString)
+        println(gameString)
+        return Json.decodeFromString<Game>(gameString)
     }
 
     private fun sendPacket(game: Game, ipAddress: InetAddress, port: Int) {
-        val socket = DatagramSocket()
+        val socket = DatagramSocket(0)
 
         val gameBytes = serializeGame(game).toByteArray() // Serialize the Game object to bytes
 
-        val packet = DatagramPacket(gameBytes, gameBytes.size, ipAddress, port)
+        val packet = DatagramPacket(gameBytes, gameBytes.size, ipAddress, socket.localPort)
         socket.send(packet)
 
         socket.close()

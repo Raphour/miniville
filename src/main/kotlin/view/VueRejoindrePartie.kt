@@ -16,7 +16,7 @@ class VueRejoindrePartie:  BorderPane() {
     private val inputNomJoueurs = TextField("Pseudo")
 
     private val texteIdJoueur = Label("Quel est votre numéro (unique) de joueur")
-    private lateinit var  listeIdDispo : MutableList<Int>
+    private var  listeIdDispo : MutableList<Int> = mutableListOf(0)
     private var inputIdjoueur = ComboBox(FXCollections.observableArrayList(listeIdDispo))
     val boutonRejoindrePartie = Button("C'est parti !")
     init{

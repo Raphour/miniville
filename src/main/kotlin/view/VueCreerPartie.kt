@@ -8,7 +8,7 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.VBox
 
 
-class CreerPartie : BorderPane() {
+class VueCreerPartie : BorderPane() {
     private val centre = VBox()
     private val texteCreerPartie = Label("Créer une partie")
     private val texteNombreJoueurs = Label("Nombre de joueurs")

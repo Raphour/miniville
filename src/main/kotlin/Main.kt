@@ -4,48 +4,44 @@ import javafx.application.Application
 import javafx.scene.Scene
 import javafx.stage.Stage
 import model.Game
-import view.CreerPartie
 import view.InGame
 import view.VueAccueil
+import view.VueCreerPartie
 import view.VueRejoindrePartie
-import java.io.IOException
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
-import java.net.ServerSocket
 import java.util.*
 
+fun main() {
+    Application.launch(Main::class.java)
 
-class MonApplication : Application() {
+}
+class Main : Application() {
+
+
 
 
     override fun start(primaryStage: Stage) {
         val game = Game()
         val vueInGame = InGame()
         val vueRejoindrePartie = VueRejoindrePartie()
+        val vueCreerPartie = VueCreerPartie()
 
 
         val vueAccueil = VueAccueil()
+        vueAccueil.boutonCreerPartie.onAction = ControllerBoutonCreerPartie(game,vueCreerPartie,vueInGame, primaryStage)
+        vueAccueil.boutonRejoindrePartie.onAction = ControllerBoutonRejoindrePartie(game,vueRejoindrePartie,vueInGame,primaryStage)
         vueAccueil.boutonRejoindrePartie.onAction = ControllerBoutonRejoindrePartie(game,vueRejoindrePartie, vueInGame, primaryStage)
-        primaryStage.scene = Scene(vueAccueil,1920.0,1080.0)
+        primaryStage.scene = Scene(vueAccueil,1680.0,1120.0)
         primaryStage.title = "Miniville"
         primaryStage.show()
 
 
     }
 
+
+
 }
 
 
-
-
-
-/**
- * Verifie si un port donné en argument n'est attribué à aucun service
- *
- * @param port
- * @return Un booléen décrivant la disponibilité du port
- */
 
 
 
