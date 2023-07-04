@@ -5,16 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="48cbac3a-ba0c-43c5-afd6-5d707b14bb66" name="Changes" comment="ajout assets carte + ajout fonction resultat lancer dé">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonNombreJoueur.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoucleJeu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoucleJeu.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonCreerPartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonCreerPartie.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonRejoindrePartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonRejoindrePartie.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/EtatJeu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/EtatJeu.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/Game.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/Game.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/view/CreerPartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/view/VueCreerPartie.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/view/InGame.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/view/InGame.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/view/VueRejoindrePartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/view/VueRejoindrePartie.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/view/VueAccueil.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/view/VueAccueil.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,24 +82,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "D:/project/miniville",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "prettierjs.PrettierConfiguration.Package": "D:\\project\\miniville",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "settings.javascript.prettier",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/project/miniville&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;D:\\project\\miniville&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.javascript.prettier&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\project\miniville\assets\cartes" />
@@ -158,6 +155,7 @@
       <workItem from="1688128797244" duration="7310000" />
       <workItem from="1688157920346" duration="5599000" />
       <workItem from="1688210171765" duration="13026000" />
+      <workItem from="1688501854924" duration="3391000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <created>1687991361784</created>

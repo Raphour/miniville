@@ -84,6 +84,10 @@ class Game {
         return this.etatJeu
     }
 
+    fun setEtat(etatJeu: EtatJeu){
+        this.etatJeu = etatJeu
+    }
+
     fun getListeJoueurs(): MutableList<Joueur> {
         return this.listeJoueurs
     }

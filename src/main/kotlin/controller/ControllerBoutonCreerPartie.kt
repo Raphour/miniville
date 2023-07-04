@@ -1,13 +1,11 @@
 package controller
 
-import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.scene.Scene
 import javafx.scene.image.ImageView
 import javafx.stage.Stage
-import javafx.util.Duration
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import model.EtatJeu
@@ -23,26 +21,29 @@ import java.net.ServerSocket
 import java.util.*
 
 
-class ControllerBoutonCreerPartie(game: Game,vueCreerPartie: VueCreerPartie, vueInGame: InGame, primaryStage: Stage) : EventHandler<ActionEvent> {
+class ControllerBoutonCreerPartie(game: Game, vueCreerPartie: VueCreerPartie, vueInGame: InGame, primaryStage: Stage) :
+    EventHandler<ActionEvent> {
     private var game: Game
     private var vueInGame: InGame
-    private var vueCreerPartie : VueCreerPartie
+    private var vueCreerPartie: VueCreerPartie
     private var primaryStage: Stage
     private val port = DatagramSocket(0).localPort
+    private var thread: Thread? = null
 
     init {
         this.game = game
         this.primaryStage = primaryStage
         this.vueInGame = vueInGame
         this.vueCreerPartie = vueCreerPartie
+
     }
 
     override fun handle(event: ActionEvent?) {
 
-        val sceneCreerPartie = Scene(vueCreerPartie,1080.0, 700.0)
+        val sceneCreerPartie = Scene(vueCreerPartie, 1080.0, 700.0)
         primaryStage.scene = sceneCreerPartie
 
-        val joueur = Joueur(1,"Baguette")
+        val joueur = Joueur(1, "Baguette")
         val cartesImageViewList: MutableList<ImageView> = joueur.main.map { carte ->
             val imageView = ImageView(carte.getImageView()) // Créez l'ImageView en utilisant l'image de la carte
             // Effectuez ici des configurations supplémentaires sur l'ImageView si nécessaire
@@ -58,7 +59,7 @@ class ControllerBoutonCreerPartie(game: Game,vueCreerPartie: VueCreerPartie, vue
             cartesImageViewList
         )
 
-        game.setPlayer(Joueur(0,"Baguette"))
+        game.setPlayer(Joueur(0, "Baguette"))
 
         println("ENCODE TO STRING")
         // Convertissez l'objet Game en JSON
@@ -79,20 +80,21 @@ class ControllerBoutonCreerPartie(game: Game,vueCreerPartie: VueCreerPartie, vue
 
         println("TIMELINE")
 
-        timeline = Timeline(KeyFrame(Duration.seconds(1.0), {
-            println("WOW une timeline")
-            if (game.getEtat() == EtatJeu.JEU_FINI) {
-                timeline.stop()
+        thread = Thread {
+            while (!Thread.currentThread().isInterrupted){
+                println("WOW une timeline")
+                if (game.getEtat() == EtatJeu.JEU_FINI) {
+                    thread?.interrupt()
+                    thread = null
 
-
-
-            } else {
-                ControllerBoucleJeu(game, socket, vueInGame, primaryStage).mainLoop()
+                } else {
+                    ControllerBoucleJeu(game, socket, vueInGame, primaryStage).mainLoop()
+                }
             }
 
-        }))
-        timeline.cycleCount = Timeline.INDEFINITE
-        timeline.play()
+        }
+        thread?.start()
+
 
     }
 

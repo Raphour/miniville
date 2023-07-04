@@ -1,27 +1,40 @@
 package controller
 
+import javafx.scene.control.Alert
+import javafx.scene.control.Alert.AlertType
+import javafx.scene.control.ButtonType
 import javafx.stage.Stage
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import model.EtatJeu
 import model.Game
 import view.InGame
+import view.VueAccueil
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
 
-class ControllerBoucleJeu(game: Game, socket: DatagramSocket, vueInGame: InGame, primaryStage: Stage) {
+
+class ControllerBoucleJeu(
+    game: Game,
+    socket: DatagramSocket,
+    vueAccueil: VueAccueil,
+    vueInGame: InGame,
+    primaryStage: Stage
+) {
     private var game: Game
     private var vueInGame: InGame
     private var primaryStage: Stage
     private var socket: DatagramSocket
     private var bufferSize = 1024
+    private var vueAccueil: VueAccueil
 
     init {
         this.game = game
         this.vueInGame = vueInGame
         this.primaryStage = primaryStage
         this.socket = socket
+        this.vueAccueil = vueAccueil
 
     }
 
@@ -41,11 +54,8 @@ class ControllerBoucleJeu(game: Game, socket: DatagramSocket, vueInGame: InGame,
         if (game.getJoueurActuel() == game.getJoueur().getId()) {
             when (game.getEtat()) {
                 EtatJeu.LANCER_DES -> {
-                    if (game.getJoueur().getMainMonument()[0].getEtat()) {
-                        TODO("Implementer le fait que le joueur peut choisir de lancer 1 ou 2 dés")
-                    } else {
-                        game.lancerDes(1)
-                    }
+                    game.lancerDes(1)
+
                     sendPacket(game, InetAddress.getLocalHost(), socket.port)
                 }
 
@@ -54,11 +64,12 @@ class ControllerBoucleJeu(game: Game, socket: DatagramSocket, vueInGame: InGame,
                 }
 
                 EtatJeu.APPLIQUER_EFFETS -> {
-                    TODO("Implémenter la mécanique d'appliquer les effets donnés par les cartes")
                 }
 
                 EtatJeu.ATTENTE_JOUEURS -> {
-                    TODO()
+                    if (vueAccueil.getComboBoxValue() != game.getListeJoueurs().size) {
+                        game.setEtat(EtatJeu.CHOISIR_NOMBRE_DES_ET_LANCER)
+                    }
                 }
 
                 EtatJeu.ACHETER_OU_RIEN_FAIRE -> {
@@ -66,8 +77,27 @@ class ControllerBoucleJeu(game: Game, socket: DatagramSocket, vueInGame: InGame,
 
                 }
 
-                EtatJeu.CHOISIR_NOMBRE_DES -> {
-                    TODO("Afficher sur la vue un élément permettant au joueur de choisir le nombre de dé qu'il lance")
+                EtatJeu.CHOISIR_NOMBRE_DES_ET_LANCER -> {
+                    if (game.getJoueur().getMainMonument()[0].getEtat()) {
+                        val alert = Alert(AlertType.CONFIRMATION)
+                        alert.title = "C'est votre tour"
+                        alert.headerText = "Vous pouvez choisir le nombre de dés à lancer"
+                        alert.contentText = "Choisissez une option"
+
+                        val buttonTypeOne = ButtonType("1")
+                        val buttonTypeTwo = ButtonType("2")
+
+                        alert.buttonTypes.setAll(buttonTypeOne, buttonTypeTwo)
+
+                        val result = alert.showAndWait()
+                        if (result.get() == buttonTypeOne) {
+                            game.lancerDes(1)
+                        } else if (result.get() == buttonTypeTwo) {
+                            game.lancerDes(2)
+                        }
+                        game.setEtat(EtatJeu.APPLIQUER_EFFETS)
+
+                    }
                 }
 
                 EtatJeu.JEU_FINI -> {
@@ -88,11 +118,9 @@ class ControllerBoucleJeu(game: Game, socket: DatagramSocket, vueInGame: InGame,
         socket.receive(packet)
 
         val gameBytes = packet.data
-        val game = deserializeGame(String(gameBytes,0,packet.length)) // Deserialize the bytes back to a Game object
 
 
-
-        return game
+        return deserializeGame(String(gameBytes, 0, packet.length))
     }
 
     private fun serializeGame(game: Game): String {
