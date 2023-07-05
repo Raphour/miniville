@@ -12,7 +12,7 @@ import model.EtatJeu
 import model.Game
 import model.Joueur
 import view.InGame
-import view.VueCreerPartie
+import view.VueAccueil
 import java.io.IOException
 import java.net.DatagramPacket
 import java.net.DatagramSocket
@@ -21,11 +21,11 @@ import java.net.ServerSocket
 import java.util.*
 
 
-class ControllerBoutonCreerPartie(game: Game, vueCreerPartie: VueCreerPartie, vueInGame: InGame, primaryStage: Stage) :
+class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame: InGame, primaryStage: Stage) :
     EventHandler<ActionEvent> {
     private var game: Game
     private var vueInGame: InGame
-    private var vueCreerPartie: VueCreerPartie
+    private var vueAccueil: VueAccueil
     private var primaryStage: Stage
     private val port = DatagramSocket(0).localPort
     private var thread: Thread? = null
@@ -34,13 +34,13 @@ class ControllerBoutonCreerPartie(game: Game, vueCreerPartie: VueCreerPartie, vu
         this.game = game
         this.primaryStage = primaryStage
         this.vueInGame = vueInGame
-        this.vueCreerPartie = vueCreerPartie
+        this.vueAccueil = vueAccueil
 
     }
 
     override fun handle(event: ActionEvent?) {
 
-        val sceneCreerPartie = Scene(vueCreerPartie, 1080.0, 700.0)
+        val sceneCreerPartie = Scene(vueInGame, 1080.0, 700.0)
         primaryStage.scene = sceneCreerPartie
 
         val joueur = Joueur(1, "Baguette")
@@ -81,14 +81,14 @@ class ControllerBoutonCreerPartie(game: Game, vueCreerPartie: VueCreerPartie, vu
         println("TIMELINE")
 
         thread = Thread {
-            while (!Thread.currentThread().isInterrupted){
+            while (!Thread.currentThread().isInterrupted) {
                 println("WOW une timeline")
                 if (game.getEtat() == EtatJeu.JEU_FINI) {
                     thread?.interrupt()
                     thread = null
 
                 } else {
-                    ControllerBoucleJeu(game, socket, vueInGame, primaryStage).mainLoop()
+                    ControllerBoucleJeu(game, socket, vueAccueil, vueInGame, primaryStage).mainLoop()
                 }
             }
 

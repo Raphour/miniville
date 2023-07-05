@@ -2,7 +2,6 @@ package model
 
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Transient
 
 @Serializable
 class Game {
@@ -10,7 +9,7 @@ class Game {
     private var reserve: MutableList<Carte> = mutableListOf()
     private var lanceDes: Pair<Int, Int?> = Pair<Int, Int?>(0, null)
     private var etatJeu: EtatJeu = EtatJeu.ATTENTE_JOUEURS
-    private var joueurActuel: Int = 0
+    private var joueurActuel: Joueur? = null
     private var nbDesLances: Int = 0
 
     private var listeJoueurs: MutableList<Joueur> = mutableListOf()
@@ -68,8 +67,15 @@ class Game {
         this.nbDesLances = nb
     }
 
-    fun getJoueurActuel(): Int {
+    fun getJoueurActuel(): Joueur? {
         return joueurActuel
+    }
+    fun getActualPlayerId():Int?{
+        return joueurActuel?.getId()
+    }
+
+    fun setActualPlayerId(id:Int){
+        this.joueurActuel = listeJoueurs.find { it.getId() == id }
     }
 
     fun getJoueur(): Joueur {
@@ -84,7 +90,7 @@ class Game {
         return this.etatJeu
     }
 
-    fun setEtat(etatJeu: EtatJeu){
+    fun setEtat(etatJeu: EtatJeu) {
         this.etatJeu = etatJeu
     }
 
@@ -97,183 +103,198 @@ class Game {
         if (this.lanceDes.second != null) {
             resultat += this.lanceDes.second!!
         }
-    return resultat
-}
-
-
-fun construireBatiment(batiment: Carte, joueur: Joueur) {
-    if (etatJeu == EtatJeu.ACHETER_OU_RIEN_FAIRE) {
-        if (joueur.getBourse() >= batiment.getPrix()) {
-            joueur.main.add(batiment)
-            this.reserve.remove(batiment)
-            joueur.removeBourse(batiment.getPrix())
-        }
-    } else {
-        throw Exception("Ce n'est pas le moment de construire")
+        return resultat
     }
-}
 
-fun construireMonument(monument: CarteMonument, joueur: Joueur) {
-    if (etatJeu == EtatJeu.ACHETER_OU_RIEN_FAIRE) {
-        if (joueur.getBourse() >= monument.getPrix() && !monument.getEtat()) {
-            joueur.removeBourse(monument.getPrix())
-            for (m in joueur.getMainMonument()) {
-                if (m == monument) {
-                    m.setEtat(true)
-                }
+
+    fun construireBatiment(batiment: Carte, joueur: Joueur) {
+        if (etatJeu == EtatJeu.ACHETER_OU_RIEN_FAIRE) {
+            if (joueur.getBourse() >= batiment.getPrix()) {
+                joueur.main.add(batiment)
+                this.reserve.remove(batiment)
+                joueur.removeBourse(batiment.getPrix())
             }
+        } else {
+            throw Exception("Ce n'est pas le moment de construire")
         }
-    } else {
-        throw Exception("Ce n'est pas le moment de construire")
     }
-}
 
-fun distributionCarteJoueur() {
-    for (joueurs in listeJoueurs) {
-        joueurs.main.add(Carte(1, "Champs de blé", listOf(1), 1, TypeBatiment.EPI))
-        joueurs.main.add(Carte(2, "Ferme", listOf(2), 1, TypeBatiment.VACHE))
-    }
-}
-
-fun appliquerEffet(
-    carte: Carte,
-    joueurActuel: Joueur,
-    joueurVise: Joueur? = null,
-    carteVoulue: Carte? = null,
-    carteDonnee: Carte? = null
-) {
-    when (carte.getNom()) {
-        "Champs de blé" -> {
-            for (joueur in this.listeJoueurs) {
-                if (joueur.main.any { it.getNom() == "Champs de blé" }) {
-                    joueur.addBourse(1)
-                }
-            }
-        }
-
-        "Ferme" -> {
-            for (joueur in this.listeJoueurs) {
-                if (joueur.main.any { it.getNom() == "Ferme" }) {
-                    joueur.addBourse(1)
-                }
-            }
-        }
-
-        "Boulangerie" -> {
-            joueurActuel.addBourse(1)
-        }
-
-        "Café" -> {
-            for (joueur in listeJoueurs) {
-                if (joueur != joueurActuel) {
-                    val compteCafe = joueur.main.count { it.getNom() == "Café" }
-                    joueur.addBourse(joueurActuel.removeBourse(compteCafe * 3))
-                }
-            }
-        }
-
-        "Supérette" -> {
-            joueurActuel.addBourse(3)
-        }
-
-        "Forêt" -> {
-            for (joueur in this.listeJoueurs) {
-                val compteForet = joueur.main.count { it.getNom() == "Forêt" }
-                joueur.addBourse(compteForet * 3)
-
-            }
-
-        }
-
-        "Stade" -> {
-            for (joueur in listeJoueurs) {
-
-                joueurActuel.addBourse(joueur.removeBourse(2))
-            }
-        }
-
-        "Centre d'affaire" -> {
-            if (joueurVise != null && carteVoulue != null && carteDonnee != null) {
-
-                val indexCarteVoulueDansMain = joueurVise.main.indexOfFirst { it.getNom() == carteVoulue.getNom() }
-                val indexCarteDonneDansMain = joueurActuel.main.indexOfFirst { it.getNom() == carteDonnee.getNom() }
-                if (indexCarteVoulueDansMain != -1) {
-                    if (indexCarteDonneDansMain != -1) {
-                        joueurActuel.main.add(carteVoulue)
-                        joueurVise.main.add(carteDonnee)
-                        joueurActuel.main.remove(carteDonnee)
-                        joueurVise.main.remove(carteVoulue)
-
-                    } else {
-                        throw Exception("Le joueur ne possède pas la carte qu'il veut échanger")
+    fun construireMonument(monument: CarteMonument, joueur: Joueur) {
+        if (etatJeu == EtatJeu.ACHETER_OU_RIEN_FAIRE) {
+            if (joueur.getBourse() >= monument.getPrix() && !monument.getEtat()) {
+                joueur.removeBourse(monument.getPrix())
+                for (m in joueur.getMainMonument()) {
+                    if (m == monument) {
+                        m.setEtat(true)
                     }
+                }
+            }
+        } else {
+            throw Exception("Ce n'est pas le moment de construire")
+        }
+    }
 
+    fun distributionCarteJoueur() {
+        for (joueurs in listeJoueurs) {
+            joueurs.main.add(Carte(1, "Champs de blé", listOf(1), 1, TypeBatiment.EPI))
+            joueurs.main.add(Carte(2, "Ferme", listOf(2), 1, TypeBatiment.VACHE))
+        }
+    }
 
-                } else {
-                    throw Exception("Carte non présente dans la main de l'adversaire")
+    fun appliquerEffet(
+        carte: Carte,
+        joueurActuel: Joueur,
+        joueurAppliquerEffet: Joueur,
+        joueurVise: Joueur? = null,
+        carteVoulue: Carte? = null,
+        carteDonnee: Carte? = null
+    ) {
+        when (carte.getNom()) {
+            "Champs de blé" -> {
+                val compteChampsBle = joueurAppliquerEffet.main.count { it.getNom() == "Champs de Blé" }
+                joueurAppliquerEffet.addBourse(compteChampsBle)
+
+            }
+
+            "Ferme" -> {
+                val compteFerme = joueurAppliquerEffet.main.count { it.getNom() == "Ferme" }
+                joueurAppliquerEffet.addBourse(compteFerme)
+
+            }
+
+            "Boulangerie" -> {
+                if (joueurActuel == joueurAppliquerEffet) {
+                    val compteBoulangerie = joueurAppliquerEffet.main.count { it.getNom() == "Boulangerie" }
+                    joueurAppliquerEffet.addBourse(compteBoulangerie)
+                }
+
+            }
+
+            "Café" -> {
+                for (joueur in listeJoueurs) {
+                    if (joueur != joueurAppliquerEffet) {
+                        val compteCafe = joueur.main.count { it.getNom() == "Café" }
+                        joueur.addBourse(joueurActuel.removeBourse(compteCafe * 3))
+                    }
                 }
             }
 
-        }
+            "Supérette" -> {
+                if (joueurActuel == joueurAppliquerEffet) {
+                    val compteSuperette = joueurAppliquerEffet.main.count { it.getNom() == "Supérette" }
+                    joueurAppliquerEffet.addBourse(compteSuperette * 3)
+                }
 
-        "Chaîne de télévision" -> {
-            if (joueurVise != null) {
-                joueurActuel.addBourse(joueurVise.removeBourse(5))
             }
-        }
 
-        "Fromagerie" -> {
-            for (cartejoueur in joueurActuel.main) {
-                if (cartejoueur.getType() == TypeBatiment.VACHE) {
-                    joueurActuel.addBourse(3)
+            "Forêt" -> {
+                val compteForet = joueurAppliquerEffet.main.count { it.getNom() == "Forêt" }
+                joueurAppliquerEffet.addBourse(compteForet * 3)
+            }
+
+            "Stade" -> {
+                if (joueurActuel == joueurAppliquerEffet) {
+                    for (joueur in listeJoueurs) {
+                        joueurActuel.addBourse(joueur.removeBourse(2))
+                    }
                 }
             }
-        }
 
-        "Fabrique meuble" ->
-            for (cartejoueur in joueurActuel.main) {
-                if (cartejoueur.getType() == TypeBatiment.ENGRENAGE) {
-                    joueurActuel.addBourse(3)
+            "Centre d'affaire" -> {
+                if (joueurActuel == joueurAppliquerEffet) {
+                    if (joueurVise != null && carteVoulue != null && carteDonnee != null) {
+
+                        val indexCarteVoulueDansMain =
+                            joueurVise.main.indexOfFirst { it.getNom() == carteVoulue.getNom() }
+                        val indexCarteDonneDansMain =
+                            joueurActuel.main.indexOfFirst { it.getNom() == carteDonnee.getNom() }
+                        if (indexCarteVoulueDansMain != -1) {
+                            if (indexCarteDonneDansMain != -1) {
+                                joueurActuel.main.add(carteVoulue)
+                                joueurVise.main.add(carteDonnee)
+                                joueurActuel.main.remove(carteDonnee)
+                                joueurVise.main.remove(carteVoulue)
+
+                            } else {
+                                throw Exception("Le joueur ne possède pas la carte qu'il veut échanger")
+                            }
+                        } else {
+                            throw Exception("Carte non présente dans la main de l'adversaire")
+                        }
+                    }
+                }
+
+            }
+
+            "Chaîne de télévision" -> {
+                if (joueurActuel == joueurAppliquerEffet) {
+                    if (joueurVise != null) {
+                        joueurActuel.addBourse(joueurVise.removeBourse(5))
+                    }
+                }
+
+            }
+
+            "Fromagerie" -> {
+                if (joueurAppliquerEffet == joueurActuel) {
+                    for (cartejoueur in joueurActuel.main) {
+                        if (cartejoueur.getType() == TypeBatiment.VACHE) {
+                            joueurActuel.addBourse(3)
+                        }
+                    }
+                }
+
+            }
+
+            "Fabrique meuble" ->
+                if (joueurAppliquerEffet == joueurActuel) {
+                    for (cartejoueur in joueurActuel.main) {
+                        if (cartejoueur.getType() == TypeBatiment.ENGRENAGE) {
+                            joueurActuel.addBourse(3)
+                        }
+                    }
+                }
+
+            "Mine" -> {
+
+
+                val compteMine = joueurAppliquerEffet.main.count { it.getNom() == "Mine" }
+                joueurAppliquerEffet.addBourse(compteMine * 5)
+
+            }
+
+            "Restaurant" -> {
+                if (joueurActuel == joueurAppliquerEffet) {
+
+                    for (joueur in listeJoueurs) {
+                        if (joueur != joueurAppliquerEffet) {
+                            val compteRestaurant = joueur.main.count { it.getNom() == "Restaurant" }
+                            joueur.addBourse(joueurActuel.removeBourse(compteRestaurant * 2))
+                        }
+                    }
                 }
             }
 
-        "Mine" -> {
-            for (joueur in this.listeJoueurs) {
-                val compteMine = joueur.main.count { it.getNom() == "Mine" }
-                joueur.addBourse(compteMine * 5)
+            "Verger" -> {
+                val compteVerger = joueurAppliquerEffet.main.count { it.getNom() == "Verger" }
+                joueurAppliquerEffet.addBourse(3 * compteVerger)
             }
-        }
 
-        "Restaurant" -> {
-            for (joueur in listeJoueurs) {
-                if (joueur != joueurActuel) {
-                    val compteRestaurant = joueur.main.count { it.getNom() == "Restaurant" }
-                    joueur.addBourse(joueurActuel.removeBourse(compteRestaurant * 2))
+
+            "Marché fruits et légumes" -> {
+                if (joueurActuel == joueurAppliquerEffet) {
+                    val compteEpi = joueurAppliquerEffet.main.count { it.getType() == TypeBatiment.EPI }
+                    joueurAppliquerEffet.addBourse(2 * compteEpi)
                 }
             }
-        }
 
-        "Verger" -> {
-            for (joueur in this.listeJoueurs) {
-                if (joueur.main.any { it.getNom() == "Verger" }) {
-                    joueur.addBourse(3)
-                }
-            }
-        }
-
-        "Marché fruits et légumes" -> {
-            for (cartejoueur in joueurActuel.main) {
-                if (cartejoueur.getType() == TypeBatiment.EPI) {
-                    joueurActuel.addBourse(2)
-                }
-            }
         }
 
 
     }
-}
 
-override fun toString(): String {
-    return "Game(reserve=$reserve, lanceDes=$lanceDes, etatJeu=$etatJeu, joueurActuel=$joueurActuel, listeJoueurs=$listeJoueurs, player=$player)"
-}
+
+    override fun toString(): String {
+        return "Game(reserve=$reserve, lanceDes=$lanceDes, etatJeu=$etatJeu, joueurActuel=$joueurActuel, listeJoueurs=$listeJoueurs, player=$player)"
+    }
 }

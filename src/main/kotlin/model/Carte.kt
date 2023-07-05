@@ -74,4 +74,6 @@ class Carte(private var id:Int,private var nom:String,private var numeros:List<I
     override fun toString(): String {
         return "Carte(id=$id, nom='$nom')"
     }
+
+    fun getTextEffect
 }

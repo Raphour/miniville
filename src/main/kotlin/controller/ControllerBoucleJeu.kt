@@ -1,13 +1,13 @@
 package controller
 
-import javafx.scene.control.Alert
+import javafx.collections.FXCollections
+import javafx.scene.control.*
 import javafx.scene.control.Alert.AlertType
-import javafx.scene.control.ButtonType
+import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import model.EtatJeu
-import model.Game
+import model.*
 import view.InGame
 import view.VueAccueil
 import java.net.DatagramPacket
@@ -51,7 +51,7 @@ class ControllerBoucleJeu(
             var listeJoueurs = it.getListeJoueurs()
         }
 
-        if (game.getJoueurActuel() == game.getJoueur().getId()) {
+        if (game.getJoueurActuel() == game.getJoueur()) {
             when (game.getEtat()) {
                 EtatJeu.LANCER_DES -> {
                     game.lancerDes(1)
@@ -64,7 +64,134 @@ class ControllerBoucleJeu(
                 }
 
                 EtatJeu.APPLIQUER_EFFETS -> {
+                    var joueurVise: Joueur? = null
+                    var carteDonnee: Carte? = null
+                    var carteVoulue: Carte? = null
+                    if (game.getJoueur().getId() == 0) {
+                        if (game.getResultatLancer() == 6) {
+                            fun removeItem(list: List<Joueur>, itemToRemove: Joueur): List<Joueur> {
+                                return list.filterNot { it == itemToRemove }
+                            }
+                            if (game.getJoueur().main.contains(
+                                    Carte(
+                                        8,
+                                        "Centre d'affaire",
+                                        listOf(6),
+                                        8,
+                                        TypeBatiment.TOUR
+                                    )
+                                )
+                            ) {
+                                val comboBoxJoueurVise = ComboBox<String>()
+                                val comboBoxCarteVoulue = ComboBox<String>()
+                                val joueursVises = removeItem(game.getListeJoueurs(), game.getJoueur())
+                                val listeNomJoueursVises = joueursVises.map { it.getNom() }
+                                comboBoxJoueurVise.items.addAll(listeNomJoueursVises)
+                                comboBoxJoueurVise.selectionModel.selectFirst()
+                                comboBoxJoueurVise.setOnAction {
+                                    val selectedPlayer: Joueur? =
+                                        game.getListeJoueurs().find { comboBoxJoueurVise.value == it.getNom() }
+                                    if (selectedPlayer != null) {
+                                        comboBoxCarteVoulue.items =
+                                            FXCollections.observableArrayList(selectedPlayer.main
+                                                .filter { it.getType() != TypeBatiment.TOUR }
+                                                .map { it.getNom() })
+                                    }
+                                }
+                                comboBoxCarteVoulue.selectionModel.selectFirst()
+
+                                val comboBoxCarteDonnee = ComboBox<String>()
+                                comboBoxCarteDonnee.items =
+                                    FXCollections.observableArrayList(game.getJoueur().main
+                                        .filter { it.getType() != TypeBatiment.TOUR }
+                                        .map { it.getNom() })
+                                comboBoxCarteDonnee.selectionModel.selectFirst()
+
+                                val gridPane = GridPane()
+                                gridPane.hgap = 10.0
+                                gridPane.vgap = 10.0
+                                gridPane.addRow(0, comboBoxJoueurVise)
+                                gridPane.addRow(1, comboBoxCarteVoulue)
+                                gridPane.addRow(2, comboBoxCarteDonnee)
+
+                                val dialog: Dialog<Void> = Dialog()
+                                dialog.title = "Combo Box Dialog"
+                                dialog.dialogPane.content = gridPane
+                                dialog.dialogPane.buttonTypes.addAll(ButtonType.OK, ButtonType.CANCEL)
+
+
+                                // Handling user selection on OK button
+                                dialog.setResultConverter { dialogButton ->
+                                    if (dialogButton === ButtonType.OK) {
+                                        joueurVise =
+                                            game.getListeJoueurs().find { it.getNom() == comboBoxJoueurVise.value }
+                                        carteDonnee =
+                                            game.getJoueur().main.find { it.getNom() == comboBoxCarteDonnee.value }
+                                        carteVoulue =
+                                            joueurVise?.main?.find { it.getNom() == comboBoxCarteVoulue.value }
+                                        // Do something with the selected values...
+                                    }
+                                    null
+                                }
+
+
+                            } else if (game.getJoueur().main.contains(
+                                    Carte(
+                                        9,
+                                        "Chaîne de télévision",
+                                        listOf(6),
+                                        7,
+                                        TypeBatiment.TOUR
+                                    )
+                                )
+                            ) {
+                                val comboBoxJoueurVise = ComboBox<String>()
+                                val joueursVises = removeItem(game.getListeJoueurs(), game.getJoueur())
+                                val listeNomJoueursVises = joueursVises.map { it.getNom() }
+                                val choices: MutableList<String> = ArrayList()
+                                choices.addAll(listeNomJoueursVises)
+
+
+                                val dialog = ChoiceDialog(joueursVises[0].getNom(), choices)
+                                comboBoxJoueurVise.selectionModel.selectFirst()
+                                dialog.title = "Vous pouvez prendre 5 pièces à un joueur"
+                                dialog.headerText = "Selectionnez le joueur à qui vous souhaitez prendre 5 pièces"
+                                dialog.contentText = "Joueur :"
+
+// Traditional way to get the response value.
+                                val result = dialog.showAndWait()
+                                val resultOrNull = result.orElse(null)
+                                if (resultOrNull != null) {
+                                    joueurVise = game.getListeJoueurs().find { it.getNom() == resultOrNull }
+                                }
+                                game.appliquerEffet(
+                                    Carte(
+                                        9,
+                                        "Chaîne de télévision",
+                                        listOf(6),
+                                        7,
+                                        TypeBatiment.TOUR
+                                    ),
+                                    game.getJoueurActuel()!!,
+                                    game.getJoueurActuel()!!,
+                                    joueurVise,
+                                    carteVoulue,
+                                    carteDonnee
+                                )
+                                sendPacket(game, InetAddress.getLocalHost(), socket.port)
+                            }
+                        } else
+                            for (joueur in game.getListeJoueurs()) {
+                                for (carte in joueur.main) {
+                                    if (carte.getNumeros().contains(game.getResultatLancer())) {
+                                        game.appliquerEffet(carte, game.getJoueurActuel()!!, joueur)
+                                        sendPacket(game, InetAddress.getLocalHost(), socket.port)
+                                    }
+                                }
+                            }
+                    }
                 }
+
 
                 EtatJeu.ATTENTE_JOUEURS -> {
                     if (vueAccueil.getComboBoxValue() != game.getListeJoueurs().size) {
@@ -96,6 +223,7 @@ class ControllerBoucleJeu(
                             game.lancerDes(2)
                         }
                         game.setEtat(EtatJeu.APPLIQUER_EFFETS)
+                        sendPacket(game, InetAddress.getLocalHost(), socket.port)
 
                     }
                 }

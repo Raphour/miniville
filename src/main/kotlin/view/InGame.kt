@@ -11,19 +11,18 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
 
-class InGame {
+class InGame : TabPane(){
     val gameTab = Tab("Jeu")
-    var contentGrid = GridPane()
+    private var contentGrid = GridPane()
 
     init {
-
-
-        val tabPane = TabPane()
-
+        val gameTabe = Tab("Jeu")
+        gameTabe.content = contentGrid
 
         val reserveTab = Tab("Réserve")
         reserveTab.content = createReserveTabContent()
-        tabPane.tabs.add(reserveTab)
+        this.tabs.add(reserveTab)
+        this.tabs.add(gameTab)
 
     }
 

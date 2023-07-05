@@ -13,7 +13,7 @@ class VueAccueil : VBox() {
 
     init {
         vboxCreationPartie.children.addAll(boutonCreerPartie, comboBoxNbPlayer)
-        this.children.addAll(boutonCreerPartie, boutonRejoindrePartie)
+        this.children.addAll(vboxCreationPartie, boutonRejoindrePartie)
     }
 
     fun getComboBoxValue(): Int {

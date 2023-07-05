@@ -27,7 +27,7 @@ class Main : Application() {
 
 
         val vueAccueil = VueAccueil()
-        vueAccueil.boutonCreerPartie.onAction = ControllerBoutonCreerPartie(game,vueCreerPartie,vueInGame, primaryStage)
+        vueAccueil.boutonCreerPartie.onAction = ControllerBoutonCreerPartie(game,vueAccueil,vueInGame, primaryStage)
         vueAccueil.boutonRejoindrePartie.onAction = ControllerBoutonRejoindrePartie(game,vueRejoindrePartie,vueInGame,primaryStage)
         vueAccueil.boutonRejoindrePartie.onAction = ControllerBoutonRejoindrePartie(game,vueRejoindrePartie, vueInGame, primaryStage)
         primaryStage.scene = Scene(vueAccueil,1680.0,1120.0)
