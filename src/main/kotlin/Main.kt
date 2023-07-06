@@ -30,7 +30,7 @@ class Main : Application() {
         vueAccueil.boutonCreerPartie.onAction = ControllerBoutonCreerPartie(game,vueAccueil,vueInGame, primaryStage)
         vueAccueil.boutonRejoindrePartie.onAction = ControllerBoutonRejoindrePartie(game,vueRejoindrePartie,vueInGame,primaryStage)
         vueAccueil.boutonRejoindrePartie.onAction = ControllerBoutonRejoindrePartie(game,vueRejoindrePartie, vueInGame, primaryStage)
-        primaryStage.scene = Scene(vueAccueil,1680.0,1120.0)
+        primaryStage.scene = Scene(vueAccueil,1650.0,1110.0)
         primaryStage.title = "Miniville"
         primaryStage.show()
 

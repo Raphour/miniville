@@ -6,20 +6,17 @@ import javafx.event.EventHandler
 import javafx.scene.Scene
 import javafx.scene.image.ImageView
 import javafx.stage.Stage
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import model.EtatJeu
 import model.Game
 import model.Joueur
 import view.InGame
 import view.VueAccueil
 import java.io.IOException
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
-import java.net.ServerSocket
+import java.net.*
 import java.util.*
+const val MULTICAST_GROUP = "224.0.0.1"
 
+const val MULTICAST_PORT = 8888
 
 class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame: InGame, primaryStage: Stage) :
     EventHandler<ActionEvent> {
@@ -29,6 +26,7 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
     private var primaryStage: Stage
     private val port = DatagramSocket(0).localPort
     private var thread: Thread? = null
+
 
     init {
         this.game = game
@@ -60,22 +58,50 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
         )
 
         game.setPlayer(Joueur(0, "Baguette"))
-
+        /**
         println("ENCODE TO STRING")
         // Convertissez l'objet Game en JSON
         val gameJson = Json.encodeToString(game)
 
-// Convertissez le JSON en tableau d'octets pour l'envoi du paquet
+        // Convertissez le JSON en tableau d'octets pour l'envoi du paquet
         val gameData = gameJson.toByteArray()
 
-// Créez le paquet à envoyer
+        // Créez le paquet à envoyer
         val socket = DatagramSocket(0)
         val localhost = InetAddress.getLocalHost()
         val packetToSend = DatagramPacket(gameData, gameData.size, localhost, socket.localPort)
 
 
-// Envoyez le paquet
+        // Envoyez le paquet
         socket.send(packetToSend)
+         **/
+
+        // Instance du jeu
+        val gameInstance = "GameInstance1"
+
+        // Création du socket multicast pour la découverte
+        val multicastSocket = MulticastSocket(MULTICAST_PORT)
+        val multicastGroup = InetAddress.getByName(MULTICAST_GROUP)
+        multicastSocket.joinGroup(InetSocketAddress(multicastGroup, MULTICAST_PORT), NetworkInterface.getByInetAddress(InetAddress.getLocalHost()))
+
+        // Envoi d'un message pour annoncer la présence de l'instance du jeu
+        val message = "GameInstance:$gameInstance".toByteArray()
+        val packet = DatagramPacket(message, message.size, multicastGroup, MULTICAST_PORT)
+        multicastSocket.send(packet)
+
+        // Attente des messages des autres instances
+        val receiveBuffer = ByteArray(1024)
+        val receivePacket = DatagramPacket(receiveBuffer, receiveBuffer.size)
+        while (true) {
+            multicastSocket.receive(receivePacket)
+            val receivedMessage = String(receivePacket.data, 0, receivePacket.length)
+            if (receivedMessage.startsWith("GameInstance:")) {
+                val discoveredInstance = receivedMessage.substringAfter("GameInstance:")
+                println("Nouvelle instance découverte: $discoveredInstance")
+            }
+        }
+
+
         lateinit var timeline: Timeline
 
         println("TIMELINE")
@@ -83,7 +109,7 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
         thread = Thread {
             while (!Thread.currentThread().isInterrupted) {
                 println("WOW une timeline")
-                if (game.getEtat() == EtatJeu.JEU_FINI) {
+                if (game.etatJeu == EtatJeu.JEU_FINI) {
                     thread?.interrupt()
                     thread = null
 

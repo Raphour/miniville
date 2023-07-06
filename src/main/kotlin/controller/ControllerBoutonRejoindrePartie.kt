@@ -133,12 +133,12 @@ class ControllerBoutonRejoindrePartie(
      */
     private fun partieExistante(): Boolean {
 
-        val socket = DatagramSocket(port)
+        val socket = DatagramSocket(0)
         val buffer = ByteArray(bufferSize)
         val packet = DatagramPacket(buffer, buffer.size)
 
         // Essayez de recevoir un paquet
-        socket.soTimeout = 1000 // Timeout de réception (1 seconde)
+        socket.soTimeout = 5000 // Timeout de réception (1 seconde)
 
         return try {
             socket.receive(packet)

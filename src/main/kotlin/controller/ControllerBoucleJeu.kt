@@ -52,7 +52,7 @@ class ControllerBoucleJeu(
         }
 
         if (game.getJoueurActuel() == game.getJoueur()) {
-            when (game.getEtat()) {
+            when (game.etatJeu) {
                 EtatJeu.LANCER_DES -> {
                     game.lancerDes(1)
 
@@ -61,6 +61,12 @@ class ControllerBoucleJeu(
 
                 EtatJeu.APPLIQUER_OU_RELANCER_DES -> {
                     TODO("Implémenter la mécanique de choisir ou non grace à la Tour Radio, ou grace au parc d'attraction")
+                }
+
+                EtatJeu.VERIF_VICTOIRE -> {
+                    if (game.checkWin() != null){
+                        game.etatJeu = EtatJeu.CHOISIR_NOMBRE_DES_ET_LANCER
+                    }
                 }
 
                 EtatJeu.APPLIQUER_EFFETS -> {
@@ -189,18 +195,32 @@ class ControllerBoucleJeu(
                                     }
                                 }
                             }
+                        game.etatJeu = EtatJeu.ACHETER_OU_RIEN_FAIRE
                     }
                 }
 
 
                 EtatJeu.ATTENTE_JOUEURS -> {
                     if (vueAccueil.getComboBoxValue() != game.getListeJoueurs().size) {
-                        game.setEtat(EtatJeu.CHOISIR_NOMBRE_DES_ET_LANCER)
+                        game.etatJeu = EtatJeu.CHOISIR_NOMBRE_DES_ET_LANCER
                     }
                 }
 
                 EtatJeu.ACHETER_OU_RIEN_FAIRE -> {
-                    TODO("Implémenter le choix de construction du joueur ou ne rien faire")
+                    if (game.getJoueurActuel()!!.getBourse() > game.reserve.minByOrNull { it.getPrix() }?.getPrix()!!) {
+                        val alert = Alert(AlertType.CONFIRMATION)
+                        alert.title = "Achat d'un batiment"
+                        alert.headerText = "Souhaitez vous acheter un batiment "
+                        alert.contentText = "Attention si vous choisissez OUI vous serez obligé d'acheter"
+
+                        alert.buttonTypes.setAll(ButtonType.YES, ButtonType.NO)
+
+                        val result = alert.showAndWait()
+                        if (result.get() == ButtonType.NO) {
+                            game.tourJoueurSuivant()
+                            game.etatJeu = (EtatJeu.VERIF_VICTOIRE)
+                        }
+                    }
 
                 }
 
@@ -222,14 +242,19 @@ class ControllerBoucleJeu(
                         } else if (result.get() == buttonTypeTwo) {
                             game.lancerDes(2)
                         }
-                        game.setEtat(EtatJeu.APPLIQUER_EFFETS)
+                        game.etatJeu = (EtatJeu.APPLIQUER_EFFETS)
                         sendPacket(game, InetAddress.getLocalHost(), socket.port)
 
                     }
                 }
 
                 EtatJeu.JEU_FINI -> {
-                    TODO("Implementer pop-up de fin de jeu")
+                    val alert = Alert(AlertType.INFORMATION)
+                    alert.title = "Game Over"
+                    alert.headerText = "La partie est finie"
+                    alert.contentText = "${game.checkWin()?.getNom()} a réussi à construire ses monuments"
+
+                    alert.showAndWait()
                 }
             }
             sendPacket(game, InetAddress.getLocalHost(), socket.port)

@@ -6,15 +6,22 @@ import kotlinx.serialization.Serializable
 @Serializable
 class Game {
 
-    private var reserve: MutableList<Carte> = mutableListOf()
+    var reserve: MutableList<Carte> = mutableListOf()
     private var lanceDes: Pair<Int, Int?> = Pair<Int, Int?>(0, null)
-    private var etatJeu: EtatJeu = EtatJeu.ATTENTE_JOUEURS
-    private var joueurActuel: Joueur? = null
+    var etatJeu: EtatJeu = EtatJeu.ATTENTE_JOUEURS
+        get() = field
+        set(value) {
+            field = value
+        }
+    private lateinit var joueurActuel: Joueur
     private var nbDesLances: Int = 0
 
     private var listeJoueurs: MutableList<Joueur> = mutableListOf()
 
     private lateinit var player: Joueur
+    init {
+        setActualPlayerById(0)
+    }
 
     fun preremplirCarte() {
         for (i in 0 until 4) {
@@ -59,6 +66,14 @@ class Game {
         this.player = joueur
     }
 
+    fun tourJoueurSuivant(){
+        if (getActualPlayerId()==listeJoueurs.size){
+            setActualPlayerById(0)
+        }else{
+            setActualPlayerById(getActualPlayerId().plus(1)  )
+        }
+    }
+
     fun getNbDesLances(): Int {
         return this.nbDesLances
     }
@@ -70,12 +85,15 @@ class Game {
     fun getJoueurActuel(): Joueur? {
         return joueurActuel
     }
-    fun getActualPlayerId():Int?{
-        return joueurActuel?.getId()
+    fun getActualPlayerId():Int{
+        return joueurActuel.getId()
     }
 
-    fun setActualPlayerId(id:Int){
-        this.joueurActuel = listeJoueurs.find { it.getId() == id }
+    fun setActualPlayerById(id:Int){
+        val joueurActuelOrNull = listeJoueurs.find { it.getId() == id }
+        if (joueurActuelOrNull != null){
+            this.joueurActuel = joueurActuelOrNull
+        }
     }
 
     fun getJoueur(): Joueur {
@@ -104,6 +122,16 @@ class Game {
             resultat += this.lanceDes.second!!
         }
         return resultat
+    }
+
+    fun checkWin():Joueur?{
+        for(joueur in listeJoueurs){
+            if (joueur.getMainMonument().count { it.getEtat() } == 4){
+                etatJeu = EtatJeu.JEU_FINI
+                return joueur
+            }
+        }
+        return null
     }
 
 
