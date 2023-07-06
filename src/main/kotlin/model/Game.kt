@@ -5,24 +5,48 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class Game {
-
+    /**
+     * Toutes les cartes pouvant être achetées
+     */
     var reserve: MutableList<Carte> = mutableListOf()
+
+    /**
+     * Pair d'entier representant le lancer de dé
+     */
     private var lanceDes: Pair<Int, Int?> = Pair<Int, Int?>(0, null)
-    var etatJeu: EtatJeu = EtatJeu.ATTENTE_JOUEURS
+
+    /**
+     * Nombre de dés à lancer
+     */
+    private var nbDesLances: Int = 0
+
+    /**
+     * Décrit l'état actuel du jeu
+     */
+    var etatJeu: EtatJeu = EtatJeu.ATTENTE_JOUEURS // Etat actuel du jeu
         get() = field
         set(value) {
             field = value
         }
-    private lateinit var joueurActuel: Joueur
-    private var nbDesLances: Int = 0
 
+    /**
+     * Liste des joueurs "connectés"
+     */
     private var listeJoueurs: MutableList<Joueur> = mutableListOf()
 
-    private lateinit var player: Joueur
+    /**
+     * Joueur dont c'est le tour
+     */
+    private lateinit var joueurActuel: Joueur
+
     init {
         setActualPlayerById(0)
     }
 
+    /**
+     * Méthode permettant de remplir la reserve avec les cartes
+     *
+     */
     fun preremplirCarte() {
         for (i in 0 until 4) {
             this.reserve.add(Carte(1, "Champs de blé", listOf(1), 1, TypeBatiment.EPI))
@@ -40,11 +64,14 @@ class Game {
             this.reserve.add(Carte(13, "Restaurant", listOf(9, 10), 3, TypeBatiment.CAFE))
             this.reserve.add(Carte(14, "Verger", listOf(10), 3, TypeBatiment.EPI))
             this.reserve.add(Carte(15, "Marché fruits et légumes", listOf(11, 12), 2, TypeBatiment.FRUIT))
-
-
         }
     }
 
+    /**
+     * Simule un lancer de dés,
+     *
+     * @param nbDes, nombre de dés lancés
+     */
     fun lancerDes(nbDes: Int) {
         if (etatJeu == EtatJeu.LANCER_DES) {
 
@@ -62,15 +89,15 @@ class Game {
 
     }
 
-    fun setPlayer(joueur: Joueur) {
-        this.player = joueur
-    }
-
-    fun tourJoueurSuivant(){
-        if (getActualPlayerId()==listeJoueurs.size){
+    /**
+     * Actualise le game pour passer au joueur suivant
+     *
+     */
+    fun tourJoueurSuivant() {
+        if (getActualPlayerId() == listeJoueurs.size) {
             setActualPlayerById(0)
-        }else{
-            setActualPlayerById(getActualPlayerId().plus(1)  )
+        } else {
+            setActualPlayerById(getActualPlayerId().plus(1))
         }
     }
 
@@ -85,19 +112,16 @@ class Game {
     fun getJoueurActuel(): Joueur? {
         return joueurActuel
     }
-    fun getActualPlayerId():Int{
+
+    fun getActualPlayerId(): Int {
         return joueurActuel.getId()
     }
 
-    fun setActualPlayerById(id:Int){
+    fun setActualPlayerById(id: Int) {
         val joueurActuelOrNull = listeJoueurs.find { it.getId() == id }
-        if (joueurActuelOrNull != null){
+        if (joueurActuelOrNull != null) {
             this.joueurActuel = joueurActuelOrNull
         }
-    }
-
-    fun getJoueur(): Joueur {
-        return player
     }
 
     fun addPlayerToGame(joueur: Joueur) {
@@ -115,7 +139,11 @@ class Game {
     fun getListeJoueurs(): MutableList<Joueur> {
         return this.listeJoueurs
     }
-
+    /**
+     * Retourne le résultat du lancer de dés.
+     *
+     * @return Le résultat du lancer de dés.
+     */
     fun getResultatLancer(): Int {
         var resultat = this.lanceDes.first
         if (this.lanceDes.second != null) {
@@ -124,9 +152,9 @@ class Game {
         return resultat
     }
 
-    fun checkWin():Joueur?{
-        for(joueur in listeJoueurs){
-            if (joueur.getMainMonument().count { it.getEtat() } == 4){
+    fun checkWin(): Joueur? {
+        for (joueur in listeJoueurs) {
+            if (joueur.getMainMonument().count { it.getEtat() } == 4) {
                 etatJeu = EtatJeu.JEU_FINI
                 return joueur
             }
@@ -323,6 +351,6 @@ class Game {
 
 
     override fun toString(): String {
-        return "Game(reserve=$reserve, lanceDes=$lanceDes, etatJeu=$etatJeu, joueurActuel=$joueurActuel, listeJoueurs=$listeJoueurs, player=$player)"
+        return "Game(reserve=$reserve, lanceDes=$lanceDes, etatJeu=$etatJeu, joueurActuel=$joueurActuel, listeJoueurs=$listeJoueurs)"
     }
 }

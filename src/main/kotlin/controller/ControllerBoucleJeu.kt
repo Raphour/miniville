@@ -18,6 +18,7 @@ import java.net.InetAddress
 class ControllerBoucleJeu(
     game: Game,
     socket: DatagramSocket,
+    joueur: Joueur,
     vueAccueil: VueAccueil,
     vueInGame: InGame,
     primaryStage: Stage
@@ -28,6 +29,7 @@ class ControllerBoucleJeu(
     private var socket: DatagramSocket
     private var bufferSize = 1024
     private var vueAccueil: VueAccueil
+    private var joueur: Joueur
 
     init {
         this.game = game
@@ -35,6 +37,7 @@ class ControllerBoucleJeu(
         this.primaryStage = primaryStage
         this.socket = socket
         this.vueAccueil = vueAccueil
+        this.joueur = joueur
 
     }
 
@@ -51,7 +54,7 @@ class ControllerBoucleJeu(
             var listeJoueurs = it.getListeJoueurs()
         }
 
-        if (game.getJoueurActuel() == game.getJoueur()) {
+        if (game.getJoueurActuel() == joueur) {
             when (game.etatJeu) {
                 EtatJeu.LANCER_DES -> {
                     game.lancerDes(1)
@@ -64,7 +67,7 @@ class ControllerBoucleJeu(
                 }
 
                 EtatJeu.VERIF_VICTOIRE -> {
-                    if (game.checkWin() != null){
+                    if (game.checkWin() != null) {
                         game.etatJeu = EtatJeu.CHOISIR_NOMBRE_DES_ET_LANCER
                     }
                 }
@@ -73,12 +76,12 @@ class ControllerBoucleJeu(
                     var joueurVise: Joueur? = null
                     var carteDonnee: Carte? = null
                     var carteVoulue: Carte? = null
-                    if (game.getJoueur().getId() == 0) {
+                    if (joueur.getId() == 0) {
                         if (game.getResultatLancer() == 6) {
                             fun removeItem(list: List<Joueur>, itemToRemove: Joueur): List<Joueur> {
                                 return list.filterNot { it == itemToRemove }
                             }
-                            if (game.getJoueur().main.contains(
+                            if (joueur.main.contains(
                                     Carte(
                                         8,
                                         "Centre d'affaire",
@@ -90,7 +93,7 @@ class ControllerBoucleJeu(
                             ) {
                                 val comboBoxJoueurVise = ComboBox<String>()
                                 val comboBoxCarteVoulue = ComboBox<String>()
-                                val joueursVises = removeItem(game.getListeJoueurs(), game.getJoueur())
+                                val joueursVises = removeItem(game.getListeJoueurs(), joueur)
                                 val listeNomJoueursVises = joueursVises.map { it.getNom() }
                                 comboBoxJoueurVise.items.addAll(listeNomJoueursVises)
                                 comboBoxJoueurVise.selectionModel.selectFirst()
@@ -108,7 +111,7 @@ class ControllerBoucleJeu(
 
                                 val comboBoxCarteDonnee = ComboBox<String>()
                                 comboBoxCarteDonnee.items =
-                                    FXCollections.observableArrayList(game.getJoueur().main
+                                    FXCollections.observableArrayList(joueur.main
                                         .filter { it.getType() != TypeBatiment.TOUR }
                                         .map { it.getNom() })
                                 comboBoxCarteDonnee.selectionModel.selectFirst()
@@ -132,7 +135,7 @@ class ControllerBoucleJeu(
                                         joueurVise =
                                             game.getListeJoueurs().find { it.getNom() == comboBoxJoueurVise.value }
                                         carteDonnee =
-                                            game.getJoueur().main.find { it.getNom() == comboBoxCarteDonnee.value }
+                                            joueur.main.find { it.getNom() == comboBoxCarteDonnee.value }
                                         carteVoulue =
                                             joueurVise?.main?.find { it.getNom() == comboBoxCarteVoulue.value }
                                         // Do something with the selected values...
@@ -141,7 +144,7 @@ class ControllerBoucleJeu(
                                 }
 
 
-                            } else if (game.getJoueur().main.contains(
+                            } else if (joueur.main.contains(
                                     Carte(
                                         9,
                                         "Chaîne de télévision",
@@ -152,7 +155,7 @@ class ControllerBoucleJeu(
                                 )
                             ) {
                                 val comboBoxJoueurVise = ComboBox<String>()
-                                val joueursVises = removeItem(game.getListeJoueurs(), game.getJoueur())
+                                val joueursVises = removeItem(game.getListeJoueurs(), joueur)
                                 val listeNomJoueursVises = joueursVises.map { it.getNom() }
                                 val choices: MutableList<String> = ArrayList()
                                 choices.addAll(listeNomJoueursVises)
@@ -225,7 +228,7 @@ class ControllerBoucleJeu(
                 }
 
                 EtatJeu.CHOISIR_NOMBRE_DES_ET_LANCER -> {
-                    if (game.getJoueur().getMainMonument()[0].getEtat()) {
+                    if (joueur.getMainMonument()[0].getEtat()) {
                         val alert = Alert(AlertType.CONFIRMATION)
                         alert.title = "C'est votre tour"
                         alert.headerText = "Vous pouvez choisir le nombre de dés à lancer"

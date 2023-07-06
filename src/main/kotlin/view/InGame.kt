@@ -16,10 +16,12 @@ class InGame : TabPane(){
     private var contentGrid = GridPane()
 
     init {
-        val gameTabe = Tab("Jeu")
-        gameTabe.content = contentGrid
+        val gameTab = Tab("Jeu")
+        gameTab.content = contentGrid
+        gameTab.isClosable = false
 
         val reserveTab = Tab("Réserve")
+        reserveTab.isClosable = false
         reserveTab.content = createReserveTabContent()
         this.tabs.add(reserveTab)
         this.tabs.add(gameTab)

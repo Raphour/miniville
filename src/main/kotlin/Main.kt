@@ -28,8 +28,8 @@ class Main : Application() {
 
         val vueAccueil = VueAccueil()
         vueAccueil.boutonCreerPartie.onAction = ControllerBoutonCreerPartie(game,vueAccueil,vueInGame, primaryStage)
-        vueAccueil.boutonRejoindrePartie.onAction = ControllerBoutonRejoindrePartie(game,vueRejoindrePartie,vueInGame,primaryStage)
-        vueAccueil.boutonRejoindrePartie.onAction = ControllerBoutonRejoindrePartie(game,vueRejoindrePartie, vueInGame, primaryStage)
+        vueAccueil.boutonRejoindrePartie.onAction = ControllerBoutonRejoindrePartie(game,vueRejoindrePartie,vueInGame,vueAccueil,primaryStage)
+        vueAccueil.boutonRejoindrePartie.onAction = ControllerBoutonRejoindrePartie(game,vueRejoindrePartie, vueInGame, vueAccueil,primaryStage)
         primaryStage.scene = Scene(vueAccueil,1650.0,1110.0)
         primaryStage.title = "Miniville"
         primaryStage.show()

@@ -1,22 +1,23 @@
 package controller
 
-import javafx.animation.Timeline
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.scene.Scene
+import javafx.scene.control.Alert
+import javafx.scene.control.Alert.AlertType
 import javafx.scene.image.ImageView
 import javafx.stage.Stage
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import model.EtatJeu
 import model.Game
 import model.Joueur
 import view.InGame
 import view.VueAccueil
-import java.io.IOException
-import java.net.*
-import java.util.*
-const val MULTICAST_GROUP = "224.0.0.1"
+import java.net.DatagramPacket
+import java.net.DatagramSocket
+import java.net.InetAddress
 
-const val MULTICAST_PORT = 8888
 
 class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame: InGame, primaryStage: Stage) :
     EventHandler<ActionEvent> {
@@ -24,7 +25,8 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
     private var vueInGame: InGame
     private var vueAccueil: VueAccueil
     private var primaryStage: Stage
-    private val port = DatagramSocket(0).localPort
+    private val serverPort: Int = 5000
+    private val clients: MutableMap<InetAddress, Int> = mutableMapOf()
     private var thread: Thread? = null
 
 
@@ -38,118 +40,123 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
 
     override fun handle(event: ActionEvent?) {
 
-        val sceneCreerPartie = Scene(vueInGame, 1080.0, 700.0)
-        primaryStage.scene = sceneCreerPartie
+        if (vueAccueil.getNomJoueur() == "") {
+            val alert = Alert(AlertType.WARNING)
+            alert.title = "Attention !"
+            alert.headerText = "Vous n'avez pas renseigné de nom"
+            alert.contentText = "Entrez votre nom"
 
-        val joueur = Joueur(1, "Baguette")
-        val cartesImageViewList: MutableList<ImageView> = joueur.main.map { carte ->
-            val imageView = ImageView(carte.getImageView()) // Créez l'ImageView en utilisant l'image de la carte
-            // Effectuez ici des configurations supplémentaires sur l'ImageView si nécessaire
-            imageView
-        }.toMutableList()
+            alert.showAndWait()
+        } else {
+            val sceneCreerPartie = Scene(vueInGame, 1080.0, 700.0)
+            primaryStage.scene = sceneCreerPartie
 
-        vueInGame.addPlayerToGrid(
-            joueur.getNom(),
-            joueur.getMainMonument().count { it.getEtat() },
-            joueur.getId(),
-            joueur.getId(),
-            joueur.getBourse(),
-            cartesImageViewList
-        )
+            val joueur = Joueur(0, vueAccueil.getNomJoueur())
+            game.addPlayerToGame(joueur)
+            game.setActualPlayerById(0)
+            val cartesImageViewList: MutableList<ImageView> = joueur.main.map { carte ->
+                val imageView = ImageView(carte.getImageView()) // Créez l'ImageView en utilisant l'image de la carte
+                // Effectuez ici des configurations supplémentaires sur l'ImageView si nécessaire
+                imageView
+            }.toMutableList()
 
-        game.setPlayer(Joueur(0, "Baguette"))
-        /**
-        println("ENCODE TO STRING")
-        // Convertissez l'objet Game en JSON
-        val gameJson = Json.encodeToString(game)
+            vueInGame.addPlayerToGrid(
+                joueur.getNom(),
+                joueur.getMainMonument().count { it.getEtat() },
+                joueur.getId(),
+                joueur.getId(),
+                joueur.getBourse(),
+                cartesImageViewList
+            )
 
-        // Convertissez le JSON en tableau d'octets pour l'envoi du paquet
-        val gameData = gameJson.toByteArray()
+            val socket = DatagramSocket(serverPort)
 
-        // Créez le paquet à envoyer
-        val socket = DatagramSocket(0)
-        val localhost = InetAddress.getLocalHost()
-        val packetToSend = DatagramPacket(gameData, gameData.size, localhost, socket.localPort)
+            println("Serveur en attente de connexions...")
 
+            thread = Thread {
+                if (game.etatJeu == EtatJeu.ATTENTE_JOUEURS) {
+                    val receiveData = ByteArray(1024)
+                    val receivePacket = DatagramPacket(receiveData, receiveData.size)
+                    socket.receive(receivePacket)
 
-        // Envoyez le paquet
-        socket.send(packetToSend)
-         **/
+                    val clientAddress = receivePacket.address
+                    val clientPort = receivePacket.port
+                    var clientRequest = String(receivePacket.data, 0, receivePacket.length)
 
-        // Instance du jeu
-        val gameInstance = "GameInstance1"
+                    val nomJoueurDemande = clientRequest.subSequence(3, clientRequest.length)
+                    clientRequest = clientRequest.substring(0, 3)
 
-        // Création du socket multicast pour la découverte
-        val multicastSocket = MulticastSocket(MULTICAST_PORT)
-        val multicastGroup = InetAddress.getByName(MULTICAST_GROUP)
-        multicastSocket.joinGroup(InetSocketAddress(multicastGroup, MULTICAST_PORT), NetworkInterface.getByInetAddress(InetAddress.getLocalHost()))
+                    if (clientRequest == "JOIN") {
+                        // Ajouter le client à la liste des clients connectés
+                        if (!clients.contains(clientAddress)) {
+                            clients[clientAddress] = clientPort
+                            println("Nouveau client connecté : $clientAddress")
+                            sendJoinResponse(clientAddress, clientPort, "${clients.size - 1}" + "JOIN_ACCEPTED")
+                            game.addPlayerToGame(
+                                Joueur(
+                                    game.getListeJoueurs().size,
+                                    nomJoueurDemande.toString().replace(" ", "")
+                                )
+                            )
+                            println("0${nomJoueurDemande.toString().replace(" ", "")}0")
 
-        // Envoi d'un message pour annoncer la présence de l'instance du jeu
-        val message = "GameInstance:$gameInstance".toByteArray()
-        val packet = DatagramPacket(message, message.size, multicastGroup, MULTICAST_PORT)
-        multicastSocket.send(packet)
+                        } else {
+                            sendJoinResponse(clientAddress, clientPort, "0JOIN_DENIED")
+                        }
 
-        // Attente des messages des autres instances
-        val receiveBuffer = ByteArray(1024)
-        val receivePacket = DatagramPacket(receiveBuffer, receiveBuffer.size)
-        while (true) {
-            multicastSocket.receive(receivePacket)
-            val receivedMessage = String(receivePacket.data, 0, receivePacket.length)
-            if (receivedMessage.startsWith("GameInstance:")) {
-                val discoveredInstance = receivedMessage.substringAfter("GameInstance:")
-                println("Nouvelle instance découverte: $discoveredInstance")
-            }
-        }
+                        // Envoyer les mises à jour du jeu au client
+                        sendGameUpdate(clientAddress, clientPort, game)
+                    } else {
+                        if (game.etatJeu == EtatJeu.JEU_FINI) {
+                            ControllerBoucleJeu(game, socket, joueur, vueAccueil, vueInGame, primaryStage).mainLoop()
+                            thread?.interrupt()
+                            thread = null
 
+                        } else {
+                            ControllerBoucleJeu(game, socket, joueur, vueAccueil, vueInGame, primaryStage).mainLoop()
+                        }
+                    }
 
-        lateinit var timeline: Timeline
-
-        println("TIMELINE")
-
-        thread = Thread {
-            while (!Thread.currentThread().isInterrupted) {
-                println("WOW une timeline")
-                if (game.etatJeu == EtatJeu.JEU_FINI) {
-                    thread?.interrupt()
-                    thread = null
-
-                } else {
-                    ControllerBoucleJeu(game, socket, vueAccueil, vueInGame, primaryStage).mainLoop()
                 }
+
+
             }
+            thread?.start()
+
 
         }
-        thread?.start()
 
 
     }
 
-    private fun isPortAvailable(port: Int): Boolean {
-        return try {
-            ServerSocket(port).use {
-                // Le port est disponible
-                true
-            }
-        } catch (e: IOException) {
-            // Le port n'est pas disponible
-            false
-        }
+
+    private fun sendGameUpdate(clientAddress: InetAddress, clientPort: Int, game: Game) {
+        val socket = DatagramSocket()
+
+        // Envoi de l'objet Game sérialisé au format JSON au client
+        val json = serializeGameToJson(game)
+        val sendData = json.toByteArray()
+        val sendPacket = DatagramPacket(sendData, sendData.size, clientAddress, clientPort)
+        socket.send(sendPacket)
+
+        socket.close()
     }
 
-    /**
-     * Renvoie un port unique non utilisé par un autre service
-     *
-     * @param minPort
-     * @param maxPort
-     * @return Un port non utilisé
-     */
-    private fun generateUniquePort(minPort: Int, maxPort: Int): Int {
-        val random = Random()
-        var port = random.nextInt(maxPort - minPort + 1) + minPort
-        while (!isPortAvailable(port)) {
-            port = random.nextInt(maxPort - minPort + 1) + minPort
-        }
-        return port
+    private fun sendJoinResponse(clientAddress: InetAddress, clientPort: Int, response: String) {
+        val socket = DatagramSocket()
+
+        val sendData = response.toByteArray()
+        val sendPacket = DatagramPacket(sendData, sendData.size, clientAddress, clientPort)
+        socket.send(sendPacket)
+
+        socket.close()
+    }
+
+    private fun serializeGameToJson(game: Game): String {
+        // Utilisez la bibliothèque de sérialisation JSON pour convertir l'objet Game en JSON
+        // Exemple avec Gson :
+
+        return Json.encodeToString(game)
     }
 
 }

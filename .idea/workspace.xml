@@ -4,16 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48cbac3a-ba0c-43c5-afd6-5d707b14bb66" name="Changes" comment="update vue et controller">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerClicBatimentReserve.kt" afterDir="false" />
+    <list default="true" id="48cbac3a-ba0c-43c5-afd6-5d707b14bb66" name="Changes" comment="Debut fix probleme reseau">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoucleJeu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoucleJeu.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonCreerPartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonCreerPartie.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonRejoindrePartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonRejoindrePartie.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/Carte.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/Carte.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/EtatJeu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/EtatJeu.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/Game.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/Game.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/view/InGame.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/view/InGame.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/view/VueAccueil.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/view/VueAccueil.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -160,7 +159,7 @@
       <workItem from="1688501854924" duration="4386000" />
       <workItem from="1688508496249" duration="1197000" />
       <workItem from="1688559089448" duration="15683000" />
-      <workItem from="1688629135748" duration="1500000" />
+      <workItem from="1688629135748" duration="12919000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <created>1687991361784</created>
@@ -204,7 +203,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688582539555</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Debut fix probleme reseau">
+      <created>1688630667569</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1688630667569</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -228,7 +234,8 @@
     <MESSAGE value="Ajout notion etat jeu + controller" />
     <MESSAGE value="ajout assets carte + ajout fonction resultat lancer dé" />
     <MESSAGE value="update vue et controller" />
-    <option name="LAST_COMMIT_MESSAGE" value="update vue et controller" />
+    <MESSAGE value="Debut fix probleme reseau" />
+    <option name="LAST_COMMIT_MESSAGE" value="Debut fix probleme reseau" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
