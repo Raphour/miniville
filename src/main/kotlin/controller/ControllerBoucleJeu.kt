@@ -43,16 +43,22 @@ class ControllerBoucleJeu(
 
     fun mainLoop() {
         println("BIENVENUE DANS MAINLOOP")
-        val receivedGame = receivePacket()
+        try {
 
+            val receivedGame = receivePacket()
+            receivedGame.let {
+                // Traitez l'objet Game selon vos besoins
+                println("Game reçu : $it")
 
-        receivedGame.let {
-            // Traitez l'objet Game selon vos besoins
-            println("Game reçu : $it")
+                // Stockez la liste de joueurs dans la variable joueurList
+                var listeJoueurs = it.getListeJoueurs()
+            }
+        }catch(_:Exception){
 
-            // Stockez la liste de joueurs dans la variable joueurList
-            var listeJoueurs = it.getListeJoueurs()
         }
+
+
+
 
         if (game.getJoueurActuel() == joueur) {
             when (game.etatJeu) {

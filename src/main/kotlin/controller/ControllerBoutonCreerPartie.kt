@@ -1,5 +1,6 @@
 package controller
 
+import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.scene.Scene
@@ -54,11 +55,7 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
             val joueur = Joueur(0, vueAccueil.getNomJoueur())
             game.addPlayerToGame(joueur)
             game.setActualPlayerById(0)
-            val cartesImageViewList: MutableList<ImageView> = joueur.main.map { carte ->
-                val imageView = ImageView(carte.getImageView()) // Créez l'ImageView en utilisant l'image de la carte
-                // Effectuez ici des configurations supplémentaires sur l'ImageView si nécessaire
-                imageView
-            }.toMutableList()
+
 
             vueInGame.addPlayerToGrid(
                 joueur.getNom(),
@@ -66,7 +63,7 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
                 joueur.getId(),
                 joueur.getId(),
                 joueur.getBourse(),
-                cartesImageViewList
+                getImageViewList(joueur)
             )
 
             val socket = DatagramSocket(serverPort)
@@ -84,7 +81,8 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
                     var clientRequest = String(receivePacket.data, 0, receivePacket.length)
 
                     val nomJoueurDemande = clientRequest.subSequence(3, clientRequest.length)
-                    clientRequest = clientRequest.substring(0, 3)
+                    clientRequest = clientRequest.substring(0, 4)
+                    println(clientRequest)
 
                     if (clientRequest == "JOIN") {
                         // Ajouter le client à la liste des clients connectés
@@ -92,21 +90,27 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
                             clients[clientAddress] = clientPort
                             println("Nouveau client connecté : $clientAddress")
                             sendJoinResponse(clientAddress, clientPort, "${clients.size - 1}" + "JOIN_ACCEPTED")
-                            game.addPlayerToGame(
-                                Joueur(
-                                    game.getListeJoueurs().size,
-                                    nomJoueurDemande.toString().replace(" ", "")
-                                )
+                            val nomJoueur = nomJoueurDemande.toString().replace(" ", "")
+                            println(game.getListeJoueurs().size)
+                            val idJoueur = game.getListeJoueurs().size
+                            val joueurAjoute = Joueur(
+                                idJoueur,
+                                nomJoueur
                             )
-                            println("0${nomJoueurDemande.toString().replace(" ", "")}0")
+                            game.addPlayerToGame(
+                                joueurAjoute
+                            )
+                            Platform.runLater{vueInGame.addPlayerToGrid(nomJoueur, 0, 0, idJoueur, 3, getImageViewList(joueurAjoute))}
+                            println(nomJoueurDemande.toString().replace(" ", ""))
 
                         } else {
                             sendJoinResponse(clientAddress, clientPort, "0JOIN_DENIED")
+                            println("denied")
                         }
 
                         // Envoyer les mises à jour du jeu au client
                         sendGameUpdate(clientAddress, clientPort, game)
-                    } else {
+                    } else if (game.getListeJoueurs().size == vueAccueil.getComboBoxValue()) {
                         if (game.etatJeu == EtatJeu.JEU_FINI) {
                             ControllerBoucleJeu(game, socket, joueur, vueAccueil, vueInGame, primaryStage).mainLoop()
                             thread?.interrupt()
@@ -158,5 +162,15 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
 
         return Json.encodeToString(game)
     }
+
+    fun getImageViewList(joueur: Joueur): MutableList<ImageView> {
+        val cartesImageViewList: MutableList<ImageView> = joueur.main.map { carte ->
+            val imageView = ImageView(carte.getImageView()) // Créez l'ImageView en utilisant l'image de la carte
+            // Effectuez ici des configurations supplémentaires sur l'ImageView si nécessaire
+            imageView
+        }.toMutableList()
+        return cartesImageViewList
+    }
+
 
 }

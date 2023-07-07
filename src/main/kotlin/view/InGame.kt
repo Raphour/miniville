@@ -3,19 +3,56 @@ package view
 import javafx.geometry.Insets
 import javafx.geometry.Pos
 import javafx.scene.control.Label
+import javafx.scene.control.ScrollPane
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
 import javafx.scene.image.ImageView
-import javafx.scene.layout.GridPane
-import javafx.scene.layout.HBox
-import javafx.scene.layout.StackPane
-import javafx.scene.layout.VBox
+import javafx.scene.layout.*
+import javafx.scene.paint.Color
 
-class InGame : TabPane(){
-    val gameTab = Tab("Jeu")
+
+class InGame : TabPane() {
     private var contentGrid = GridPane()
 
+    private var vboxLog = VBox()
+
+
+    private var logPane: ScrollPane
+
+
     init {
+        addToLog("Baguette")
+        addToLog("Le pain")
+        addToLog("Le fromage")
+
+        VBox.setVgrow(vboxLog, Priority.ALWAYS)
+        vboxLog.maxWidth = Double.MAX_VALUE
+
+
+        logPane = ScrollPane(vboxLog)
+        logPane.hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
+
+
+        logPane.vbarPolicy = ScrollPane.ScrollBarPolicy.ALWAYS
+
+
+        contentGrid.add(logPane, 5, 0, 1, 2)
+
+        // Définir le nombre de lignes
+        for (row in 0 until 5) {
+            val rowConstraints = RowConstraints()
+            rowConstraints.percentHeight = 20.0 // Définir la hauteur de chaque ligne
+            contentGrid.rowConstraints.add(rowConstraints)
+        }
+
+        // Définir le nombre de colonnes
+        for (col in 0 until 6) {
+            val colConstraints = ColumnConstraints()
+            colConstraints.percentWidth = 16.66666667 // Définir la largeur de chaque colonne
+            contentGrid.columnConstraints.add(colConstraints)
+        }
+
+
         val gameTab = Tab("Jeu")
         gameTab.content = contentGrid
         gameTab.isClosable = false
@@ -23,14 +60,15 @@ class InGame : TabPane(){
         val reserveTab = Tab("Réserve")
         reserveTab.isClosable = false
         reserveTab.content = createReserveTabContent()
-        this.tabs.add(reserveTab)
         this.tabs.add(gameTab)
+        this.tabs.add(reserveTab)
+
 
     }
 
 
     fun updatePlayer(nom: String, pieces: Int, monuments: Int) {
-
+        TODO()
     }
 
 
@@ -46,22 +84,22 @@ class InGame : TabPane(){
     }
 
     fun addPlayerToGrid(
-        nom: String,
-        nbMonument: Int,
-        idJoueur: Int,
-        idJoueurAjoute: Int,
-        bourse: Int,
-        cartes: MutableList<ImageView>
+        nom: String, nbMonument: Int, idJoueur: Int, idJoueurAjoute: Int, bourse: Int, cartes: MutableList<ImageView>
     ) {
         fun isGridPaneCellEmpty(gridPane: GridPane, rowIndex: Int, columnIndex: Int): Boolean {
-            val cellNode =
-                gridPane.children.find { GridPane.getRowIndex(it) == rowIndex && GridPane.getColumnIndex(it) == columnIndex }
+            val cellNode = gridPane.children.find {
+                GridPane.getRowIndex(it) == rowIndex && GridPane.getColumnIndex(it) == columnIndex
+            }
             return cellNode == null
         }
 
         val hboxJoueur = HBox()
         val vboxInfoJoueur = VBox()
-        vboxInfoJoueur.children.add(Label(nom))
+        if (idJoueur == idJoueurAjoute) {
+            vboxInfoJoueur.children.add(Label("$nom (vous)"))
+        } else {
+            vboxInfoJoueur.children.add(Label(nom))
+        }
         vboxInfoJoueur.children.add(Label("Argent : $bourse"))
         vboxInfoJoueur.children.add(Label("Monuments : $nbMonument/4"))
 
@@ -69,15 +107,21 @@ class InGame : TabPane(){
 
         hboxJoueur.children.addAll(cartes)
 
+        println("$idJoueur $idJoueurAjoute")
         if (idJoueur == idJoueurAjoute) {
-            contentGrid.add(hboxJoueur, 1, 5, 2, 1)
+            println("MEME ID")
+            contentGrid.add(hboxJoueur, 2, 4, 2, 1)
 
         } else {
+            var rowIndex = 1
             for (i in 1..3) {
+
                 if (isGridPaneCellEmpty(contentGrid, i, 0)) {
-                    contentGrid.add(hboxJoueur, 1, i, 2, 1)
+                    rowIndex = i
+                    break
                 }
             }
+            contentGrid.add(hboxJoueur, 0, rowIndex, 2, 1)
         }
 
     }
@@ -90,5 +134,20 @@ class InGame : TabPane(){
         reservePane.children.add(reserveLabel)
 
         return reservePane
+    }
+
+    fun addToLog(message: String) {
+        val label = Label(message)
+        label.maxWidth = Double.MAX_VALUE
+
+        VBox.setVgrow(label, Priority.ALWAYS)
+        label.isWrapText = true
+        vboxLog.children.add(label)
+        if (vboxLog.children.size % 2 == 0) {
+            label.background = Background(BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY))
+        } else {
+            label.background = Background(BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))
+        }
+
     }
 }

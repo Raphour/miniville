@@ -1,13 +1,11 @@
 package controller
 
+import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
-import javafx.scene.control.Alert
-import javafx.scene.control.Alert.AlertType
-import javafx.scene.control.ButtonType
+import javafx.scene.Scene
 import javafx.scene.image.ImageView
 import javafx.stage.Stage
-import kotlinx.serialization.json.Json
 import model.Game
 import model.Joueur
 import view.InGame
@@ -22,17 +20,14 @@ import java.util.*
 
 
 class ControllerBoutonRejoindrePartie(
-    game: Game,
-    vueRejoindre: VueRejoindrePartie,
-    vueInGame: InGame,
-    vueAccueil: VueAccueil,
-    primaryStage: Stage
+    game: Game, vueRejoindre: VueRejoindrePartie, vueInGame: InGame, vueAccueil: VueAccueil, primaryStage: Stage
 ) : EventHandler<ActionEvent> {
     private var primaryStage: Stage
     private val game: Game
     private var vueInGame: InGame
     private var vueRejoindre: VueRejoindrePartie
     private var vueAccueil: VueAccueil
+    private var thread: Thread? = null
 
 
     // Taille maximale du buffer pour les paquets reçus
@@ -62,33 +57,35 @@ class ControllerBoutonRejoindrePartie(
         val sendPacket = DatagramPacket(sendData, sendData.size, serverAddress, serverPort)
         socket.send(sendPacket)
 
-        // Attente de la réponse du serveur
-        val receiveData = ByteArray(1024)
-        val receivePacket = DatagramPacket(receiveData, receiveData.size)
-        socket.receive(receivePacket)
+        thread = Thread {
 
-        val response = String(receivePacket.data, 0, receivePacket.length)
+            // Attente de la réponse du serveur
+            val receiveData = ByteArray(1024)
+            val receivePacket = DatagramPacket(receiveData, receiveData.size)
+            socket.receive(receivePacket)
+
+            val response = String(receivePacket.data, 0, receivePacket.length)
 
 
 
-        if (response.subSequence(1, response.length) == "JOIN_ACCEPTED") {
-            val idJoueur = response[0].toString().toInt()
-            val joueur = Joueur(idJoueur, vueAccueil.getNomJoueur())
-            println("Vous avez rejoint la partie avec succès.")
-            // Ajoutez ici la logique de jeu pour le joueur qui a rejoint la partie
-            miseEnPlacePlateauJoueur(joueur)
-        } else {
-            println("Impossible de rejoindre la partie.")
-            // Ajoutez ici la logique de gestion de l'échec de la demande de rejoindre la partie
+            if (response.subSequence(1, response.length) == "JOIN_ACCEPTED") {
+                val idJoueur = response[0].toString().toInt()
+                val joueur = Joueur(idJoueur, vueAccueil.getNomJoueur())
+                println("Vous avez rejoint la partie avec succès.")
+                Platform.runLater { primaryStage.scene = Scene(vueInGame) }
+                // Ajoutez ici la logique de jeu pour le joueur qui a rejoint la partie
+                miseEnPlacePlateauJoueur(joueur)
+            } else {
+                println("Impossible de rejoindre la partie.")
+                // Ajoutez ici la logique de gestion de l'échec de la demande de rejoindre la partie
+            }
+
         }
-
-        val alert = Alert(AlertType.CONFIRMATION)
-        alert.title = "Problème de partie"
-        alert.headerText = "Il semble n'y avoir aucune partie en cours"
-        alert.contentText = "Voulez vous créer une partie?"
+        thread?.start()
 
 
     }
+
 
     /**
      * Inqique si une partie est déja en cours
@@ -118,8 +115,7 @@ class ControllerBoutonRejoindrePartie(
     private fun miseEnPlacePlateauJoueur(joueur: Joueur) {
         for (joueurAjoute in game.getListeJoueurs()) {
             val cartesImageViewList: MutableList<ImageView> = joueurAjoute.main.map { carte ->
-                val imageView =
-                    ImageView(carte.getImageView()) // Créez l'ImageView en utilisant l'image de la carte
+                val imageView = ImageView(carte.getImageView()) // Créez l'ImageView en utilisant l'image de la carte
                 // Effectuez ici des configurations supplémentaires sur l'ImageView si nécessaire
                 imageView
             }.toMutableList()
