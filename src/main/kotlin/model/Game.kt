@@ -139,6 +139,7 @@ class Game {
     fun getListeJoueurs(): MutableList<Joueur> {
         return this.listeJoueurs
     }
+
     /**
      * Retourne le résultat du lancer de dés.
      *

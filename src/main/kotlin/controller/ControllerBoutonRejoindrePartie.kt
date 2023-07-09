@@ -6,7 +6,9 @@ import javafx.event.EventHandler
 import javafx.scene.Scene
 import javafx.scene.image.ImageView
 import javafx.stage.Stage
+import kotlinx.serialization.json.Json
 import model.Game
+
 import model.Joueur
 import view.InGame
 import view.VueAccueil
@@ -23,7 +25,7 @@ class ControllerBoutonRejoindrePartie(
     game: Game, vueRejoindre: VueRejoindrePartie, vueInGame: InGame, vueAccueil: VueAccueil, primaryStage: Stage
 ) : EventHandler<ActionEvent> {
     private var primaryStage: Stage
-    private val game: Game
+    private var game: Game
     private var vueInGame: InGame
     private var vueRejoindre: VueRejoindrePartie
     private var vueAccueil: VueAccueil
@@ -48,6 +50,9 @@ class ControllerBoutonRejoindrePartie(
     }
 
     override fun handle(event: ActionEvent?) {
+        var idJoueur: Int? = null
+
+        var joueur: Joueur? = null
 
         val socket = DatagramSocket()
 
@@ -67,18 +72,36 @@ class ControllerBoutonRejoindrePartie(
             val response = String(receivePacket.data, 0, receivePacket.length)
 
 
-
+            println(response.subSequence(0, 4))
+            println(response.subSequence(4, response.length))
             if (response.subSequence(1, response.length) == "JOIN_ACCEPTED") {
-                val idJoueur = response[0].toString().toInt()
-                val joueur = Joueur(idJoueur, vueAccueil.getNomJoueur())
+                idJoueur = response[0].toString().toInt()
+                joueur = Joueur(idJoueur!!, vueAccueil.getNomJoueur())
                 println("Vous avez rejoint la partie avec succès.")
                 Platform.runLater { primaryStage.scene = Scene(vueInGame) }
                 // Ajoutez ici la logique de jeu pour le joueur qui a rejoint la partie
-                miseEnPlacePlateauJoueur(joueur)
-            } else {
-                println("Impossible de rejoindre la partie.")
-                // Ajoutez ici la logique de gestion de l'échec de la demande de rejoindre la partie
+
+
+            } else if (joueur != null && response.subSequence(0, 4) == "GAME") {
+                game = deserializeJsonToGame(response.subSequence(4, response.length).toString())
+
+                    for (joueurAjoute in game.getListeJoueurs()) {
+                        Platform.runLater {
+                        vueInGame.addPlayerToGrid(
+                            joueurAjoute.getNom(),
+                            0,
+                            joueur!!.getId(),
+                            joueurAjoute.getId(),
+                            3,
+                            getImageViewList(joueurAjoute)
+                        )
+                    }
+
+                }
+
             }
+
+
 
         }
         thread?.start()
@@ -159,6 +182,19 @@ class ControllerBoutonRejoindrePartie(
             // Le port n'est pas disponible
             false
         }
+    }
+
+    private fun deserializeJsonToGame(json: String): Game {
+        return Json.decodeFromString(json)
+    }
+
+    fun getImageViewList(joueur: Joueur): MutableList<ImageView> {
+        val cartesImageViewList: MutableList<ImageView> = joueur.main.map { carte ->
+            val imageView = ImageView(carte.getImageView()) // Créez l'ImageView en utilisant l'image de la carte
+            // Effectuez ici des configurations supplémentaires sur l'ImageView si nécessaire
+            imageView
+        }.toMutableList()
+        return cartesImageViewList
     }
 
     /**

@@ -21,15 +21,18 @@ class InGame : TabPane() {
 
 
     init {
-        addToLog("Baguette")
+        addToLog("Baguette ouiouioui trop bon la baguette sa mere")
         addToLog("Le pain")
         addToLog("Le fromage")
 
-        VBox.setVgrow(vboxLog, Priority.ALWAYS)
-        vboxLog.maxWidth = Double.MAX_VALUE
-
 
         logPane = ScrollPane(vboxLog)
+
+
+
+
+
+
         logPane.hbarPolicy = ScrollPane.ScrollBarPolicy.NEVER
 
 
@@ -51,6 +54,7 @@ class InGame : TabPane() {
             colConstraints.percentWidth = 16.66666667 // Définir la largeur de chaque colonne
             contentGrid.columnConstraints.add(colConstraints)
         }
+
 
 
         val gameTab = Tab("Jeu")
@@ -84,7 +88,12 @@ class InGame : TabPane() {
     }
 
     fun addPlayerToGrid(
-        nom: String, nbMonument: Int, idJoueur: Int, idJoueurAjoute: Int, bourse: Int, cartes: MutableList<ImageView>
+        nom: String,
+        nbMonument: Int,
+        idJoueur: Int,
+        idJoueurAjoute: Int,
+        bourse: Int,
+        cartes: MutableList<ImageView>
     ) {
         fun isGridPaneCellEmpty(gridPane: GridPane, rowIndex: Int, columnIndex: Int): Boolean {
             val cellNode = gridPane.children.find {
@@ -139,7 +148,6 @@ class InGame : TabPane() {
     fun addToLog(message: String) {
         val label = Label(message)
         label.maxWidth = Double.MAX_VALUE
-
         VBox.setVgrow(label, Priority.ALWAYS)
         label.isWrapText = true
         vboxLog.children.add(label)

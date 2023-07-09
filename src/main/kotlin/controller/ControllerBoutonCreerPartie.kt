@@ -80,7 +80,7 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
                     val clientPort = receivePacket.port
                     var clientRequest = String(receivePacket.data, 0, receivePacket.length)
 
-                    val nomJoueurDemande = clientRequest.subSequence(3, clientRequest.length)
+                    val nomJoueurDemande = clientRequest.subSequence(4, clientRequest.length)
                     clientRequest = clientRequest.substring(0, 4)
                     println(clientRequest)
 
@@ -88,6 +88,7 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
                         // Ajouter le client à la liste des clients connectés
                         if (!clients.contains(clientAddress)) {
                             clients[clientAddress] = clientPort
+                            println("$clientAddress, $clientPort")
                             println("Nouveau client connecté : $clientAddress")
                             sendJoinResponse(clientAddress, clientPort, "${clients.size - 1}" + "JOIN_ACCEPTED")
                             val nomJoueur = nomJoueurDemande.toString().replace(" ", "")
@@ -100,8 +101,21 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
                             game.addPlayerToGame(
                                 joueurAjoute
                             )
-                            Platform.runLater{vueInGame.addPlayerToGrid(nomJoueur, 0, 0, idJoueur, 3, getImageViewList(joueurAjoute))}
-                            println(nomJoueurDemande.toString().replace(" ", ""))
+                            println("send")
+                            sendGameUpdate(clientAddress,clientPort,game)
+                            Platform.runLater {
+                                vueInGame.addPlayerToGrid(
+                                    nomJoueur,
+                                    0,
+                                    0,
+                                    idJoueur,
+                                    3,
+                                    getImageViewList(joueurAjoute)
+                                )
+                            }
+                            if (game.getListeJoueurs().size == vueAccueil.getComboBoxValue()) {
+                                game.etatJeu = EtatJeu.CHOISIR_NOMBRE_DES_ET_LANCER
+                            }
 
                         } else {
                             sendJoinResponse(clientAddress, clientPort, "0JOIN_DENIED")
@@ -110,7 +124,11 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
 
                         // Envoyer les mises à jour du jeu au client
                         sendGameUpdate(clientAddress, clientPort, game)
-                    } else if (game.getListeJoueurs().size == vueAccueil.getComboBoxValue()) {
+                    }else if(clientRequest == "GMRQ"){
+                        sendGameUpdate(clientAddress,clientPort,game)
+                    }
+
+                    if (game.getListeJoueurs().size == vueAccueil.getComboBoxValue()) {
                         if (game.etatJeu == EtatJeu.JEU_FINI) {
                             ControllerBoucleJeu(game, socket, joueur, vueAccueil, vueInGame, primaryStage).mainLoop()
                             thread?.interrupt()
@@ -121,8 +139,13 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
                         }
                     }
 
+
                 }
 
+                for (addrClient in clients){
+                    println("SENDFOR")
+                    sendGameUpdate(addrClient.key,addrClient.value,game)
+                }
 
             }
             thread?.start()
@@ -143,7 +166,6 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
         val sendPacket = DatagramPacket(sendData, sendData.size, clientAddress, clientPort)
         socket.send(sendPacket)
 
-        socket.close()
     }
 
     private fun sendJoinResponse(clientAddress: InetAddress, clientPort: Int, response: String) {
@@ -153,17 +175,16 @@ class ControllerBoutonCreerPartie(game: Game, vueAccueil: VueAccueil, vueInGame:
         val sendPacket = DatagramPacket(sendData, sendData.size, clientAddress, clientPort)
         socket.send(sendPacket)
 
-        socket.close()
     }
 
     private fun serializeGameToJson(game: Game): String {
         // Utilisez la bibliothèque de sérialisation JSON pour convertir l'objet Game en JSON
         // Exemple avec Gson :
 
-        return Json.encodeToString(game)
+        return "GAME${Json.encodeToString(game)}"
     }
 
-    fun getImageViewList(joueur: Joueur): MutableList<ImageView> {
+    private fun getImageViewList(joueur: Joueur): MutableList<ImageView> {
         val cartesImageViewList: MutableList<ImageView> = joueur.main.map { carte ->
             val imageView = ImageView(carte.getImageView()) // Créez l'ImageView en utilisant l'image de la carte
             // Effectuez ici des configurations supplémentaires sur l'ImageView si nécessaire

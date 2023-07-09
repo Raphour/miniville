@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="48cbac3a-ba0c-43c5-afd6-5d707b14bb66" name="Changes" comment="Avancées sur le reseau no cap cette solution est mieux">
+    <list default="true" id="48cbac3a-ba0c-43c5-afd6-5d707b14bb66" name="Changes" comment="Avancées sur le reseau + ajout boite de dialogue de log sur la vue">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoucleJeu.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoucleJeu.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonCreerPartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonCreerPartie.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonRejoindrePartie.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/controller/ControllerBoutonRejoindrePartie.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/Game.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/Game.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/view/InGame.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/view/InGame.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -162,7 +162,8 @@
       <workItem from="1688508496249" duration="1197000" />
       <workItem from="1688559089448" duration="15683000" />
       <workItem from="1688629135748" duration="13540000" />
-      <workItem from="1688728210875" duration="15132000" />
+      <workItem from="1688728210875" duration="18383000" />
+      <workItem from="1688908793414" duration="9117000" />
     </task>
     <task id="LOCAL-00001" summary="Init">
       <created>1687991361784</created>
@@ -220,7 +221,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688678568098</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Avancées sur le reseau + ajout boite de dialogue de log sur la vue">
+      <created>1688769371954</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1688769371955</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -246,7 +254,8 @@
     <MESSAGE value="update vue et controller" />
     <MESSAGE value="Debut fix probleme reseau" />
     <MESSAGE value="Avancées sur le reseau no cap cette solution est mieux" />
-    <option name="LAST_COMMIT_MESSAGE" value="Avancées sur le reseau no cap cette solution est mieux" />
+    <MESSAGE value="Avancées sur le reseau + ajout boite de dialogue de log sur la vue" />
+    <option name="LAST_COMMIT_MESSAGE" value="Avancées sur le reseau + ajout boite de dialogue de log sur la vue" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
